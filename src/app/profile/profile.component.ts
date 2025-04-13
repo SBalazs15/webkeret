@@ -30,7 +30,7 @@ export class ProfileComponent {
       username: [{ value: 'janedoe', disabled: true }, Validators.required],
       name: [{ value: 'Jane Doe', disabled: true }, Validators.required],
       email: [{ value: 'jane@example.com', disabled: true }, [Validators.required, Validators.email]],
-      dob: [{ value: '1995-04-10', disabled: true }], // 🧊 mindig readonly
+      dob: [{ value: '1995-04-10', disabled: true }],
       password: [''],
       confirmPassword: ['']
     });

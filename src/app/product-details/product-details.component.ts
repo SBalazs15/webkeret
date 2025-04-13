@@ -47,7 +47,7 @@ export class ProductDetailsComponent {
     cache.forEach((size, level) => {
       cacheDetails += `${level}: ${size} KB, `;
     });
-    return cacheDetails.slice(0, -2);  // Remove last comma
+    return cacheDetails.slice(0, -2);
   }
 
   private getPortsDetails(ports: Map<string, number>): string {
@@ -55,6 +55,6 @@ export class ProductDetailsComponent {
     ports.forEach((quantity, type) => {
       portsDetails += `${type}: ${quantity} port, `;
     });
-    return portsDetails.slice(0, -2);  // Remove last comma
+    return portsDetails.slice(0, -2);
   }
 }

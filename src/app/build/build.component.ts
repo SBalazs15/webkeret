@@ -21,7 +21,7 @@ export class BuildComponent {
 
   onCategorySelect(category: string) {
     this.selectedCategory = category;
-    this.selectedProduct = null; // új kategóriánál törlődik a kiválasztott termék
+    this.selectedProduct = null;
   }
 
   onProductSelect(product: any) {
