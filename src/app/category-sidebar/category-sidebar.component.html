@@ -1,0 +1,11 @@
+<div class="category-sidebar">
+  <div id="companyName">BuildCompare</div>
+  <div id="text">PC Builder</div>
+  <button
+    *ngFor="let category of categories"
+    (click)="selectCategory(category)"
+    class="category-btn">
+    {{ category | uppercase }}
+  </button>
+</div>
+

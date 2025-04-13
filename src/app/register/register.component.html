@@ -1,0 +1,48 @@
+<div class="register-container">
+  <h2>Regisztráció</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Név</mat-label>
+      <input matInput formControlName="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Születési dátum</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dob" required />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Felhasználónév</mat-label>
+      <input matInput formControlName="username" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Jelszó</mat-label>
+      <input matInput type="password" formControlName="password" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Jelszó megerősítése</mat-label>
+      <input matInput type="password" formControlName="confirmPassword" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email cím</mat-label>
+      <input matInput type="email" formControlName="email" required />
+    </mat-form-field>
+
+    <div *ngIf="passwordMismatch" class="error">
+      A jelszavak nem egyeznek!
+    </div>
+
+    <div class="btn-group">
+      <button mat-raised-button color="primary" type="submit" (click)="back()">Vissza</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || passwordMismatch">
+        Regisztráció
+      </button>
+    </div>
+  </form>
+</div>
+

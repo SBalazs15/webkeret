@@ -1,0 +1,47 @@
+.register-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+mat-form-field {
+  background-color: #fff;
+  z-index: 1;
+}
+
+.mat-datepicker-content {
+  background-color: white;
+  z-index: 1000 !important;
+}
+
+cdk-overlay-container {
+  z-index: 1000 !important;
+}
+
+mat-datepicker-toggle {
+  z-index: 2;
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}

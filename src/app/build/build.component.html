@@ -1,0 +1,16 @@
+<div class="build-container">
+  <div class="navigation">
+    <app-category-sidebar (categorySelected)="onCategorySelect($event)"></app-category-sidebar>
+  </div>
+
+  <div class="product-grid">
+    <app-product-grid
+      [category]="selectedCategory"
+      (productSelected)="onProductSelect($event)">
+    </app-product-grid>
+  </div>
+
+  <div class="product-details" *ngIf="selectedProduct">
+    <app-product-details [selectedProduct]="selectedProduct"></app-product-details>
+  </div>
+</div>

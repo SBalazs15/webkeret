@@ -1,0 +1,13 @@
+<div class="product-grid-container">
+  <div *ngIf="!isCategorySelected" class="welcome-block">
+    <h2>PC Builder</h2>
+    <p>Válaszd ki a kategóriát a bal oldali menüből, és kezd el építeni a saját PC-det!</p>
+  </div>
+
+  <div *ngIf="isCategorySelected" class="product-list">
+    <div class="product-card" *ngFor="let product of products" (click)="selectProduct(product)">
+      <img [src]="product.image" alt="{{ product.name }}">
+      <div class="product-name">{{ product.name }}</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="login-container">
+  <h2>Bejelentkezés</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Felhasználónév</mat-label>
+      <input matInput formControlName="username" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Jelszó</mat-label>
+      <input matInput type="password" formControlName="password" required />
+    </mat-form-field>
+
+    <div class="btn-group">
+      <button mat-raised-button color="primary" type="submit">Bejelentkezés</button>
+      <button mat-raised-button color="accent" type="button" (click)="onRegister()">Regisztráció</button>
+    </div>
+  </form>
+</div>
+

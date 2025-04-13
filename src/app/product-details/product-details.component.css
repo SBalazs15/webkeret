@@ -1,0 +1,41 @@
+.product-details-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.product-image img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-info {
+  flex: 1;
+  max-width: 600px;
+}
+
+.product-info h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.product-info p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.product-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.product-info li {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+.product-info strong {
+  font-weight: bold;
+}
