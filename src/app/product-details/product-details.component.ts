@@ -6,10 +6,14 @@ import { MotherBoard } from '../../model/motherboard.model';
 import { RAM } from '../../model/ram.model';
 import { PSU } from '../../model/psu.model';
 import { GPU } from '../../model/gpu.model';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
+  imports: [
+    NgIf
+  ],
   styleUrls: ['./product-details.component.css']
 })
 export class ProductDetailsComponent {
