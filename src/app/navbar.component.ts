@@ -16,10 +16,10 @@ import { CommonModule } from '@angular/common';
         <li class="nav-item">
           <a class="nav-link" routerLink="/compare">Összehasonlító</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
+        <li class="nav-item" >
           <a class="nav-link" routerLink="/saved">Mentett konfigurációk</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
+        <li class="nav-item" > <!--*ngIf="isLoggedIn"-->
           <a class="nav-link" routerLink="/profile">Profil</a>
         </li>
       </ul>

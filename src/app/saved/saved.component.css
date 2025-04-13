@@ -1,0 +1,18 @@
+#doboz{
+  height: 500px;
+  width: 500px;
+  display: flex;
+  align-items: center;
+  margin-top: 10%;
+  flex-direction: column;
+}
+#kulso{
+  display: flex;
+  justify-content: center;
+}
+
+p{
+  font-size: xx-large;
+  font-family: monospace;
+  font-weight: bold;
+}

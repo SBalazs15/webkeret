@@ -1,0 +1,30 @@
+.home-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.features-container {
+  margin: 2rem 0;
+}
+
+.feature-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+mat-card-title {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+}
+
+mat-card-content p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.start-button {
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}

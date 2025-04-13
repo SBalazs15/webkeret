@@ -1,1 +1,22 @@
-<p>home works!</p>
+<div class="home-container">
+  <h1>Üdvözöl a PC Builder!</h1>
+  <p>Tervezd meg a saját számítógéped gyorsan és egyszerűen.</p>
+
+  <div class="features-container">
+    <mat-grid-list cols="3" gutterSize="16px" rowHeight="1:1" *ngIf="features.length > 0">
+      <mat-grid-tile *ngFor="let feature of features">
+        <mat-card class="feature-card">
+          <img mat-card-image [src]="feature.image" alt="{{ feature.title }}">
+          <mat-card-title>{{ feature.title }}</mat-card-title>
+          <mat-card-content>
+            <p>{{ feature.description }}</p>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+  <button mat-raised-button color="primary" routerLink="/build" class="start-button">
+    Kezd el az építést
+  </button>
+</div>
