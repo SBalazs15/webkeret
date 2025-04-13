@@ -2,6 +2,12 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.7.
 
+## Téma: Számítógép alkatrész összehasonlító
+
+
+## FONTOS: Egy része a kódnak még nincs meg de minden van benne ami kell az első mérföldkőhöz.
+
+
 ## Development server
 
 To start a local development server, run:
