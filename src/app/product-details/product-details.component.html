@@ -5,10 +5,10 @@
   <div class="product-info">
     <h2>{{ selectedProduct?.name }}</h2>
     <p>{{ selectedProduct?.description }}</p>
-    <p><strong>Ár:</strong> {{ selectedProduct?.price }} Ft</p>
+    <p><strong>Ár:</strong> {{ selectedProduct?.price | price }}</p>
 
     <div *ngIf="selectedProduct">
-      <h3>Product Details:</h3>
+      <h3>Termékleírás:</h3>
       <p>{{ getDetails() }}</p>
     </div>
   </div>

@@ -7,12 +7,14 @@ import { RAM } from '../../model/ram.model';
 import { PSU } from '../../model/psu.model';
 import { GPU } from '../../model/gpu.model';
 import {NgIf} from '@angular/common';
+import { PricePipe } from '../price.pipe';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   imports: [
-    NgIf
+    NgIf,
+    PricePipe
   ],
   styleUrls: ['./product-details.component.css']
 })
