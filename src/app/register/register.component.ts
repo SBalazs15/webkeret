@@ -7,6 +7,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { User } from '../../model/user.model';
+
 
 @Component({
   selector: 'app-register',
@@ -45,7 +47,17 @@ export class RegisterComponent {
 
   onSubmit(): void {
     if (this.registerForm.valid && !this.passwordMismatch) {
-      console.log('Regisztráció:', this.registerForm.value);
+      const formValue = this.registerForm.value;
+
+      const newUser = new User(
+        formValue.name,
+        formValue.username,
+        formValue.dob,
+        formValue.email,
+        formValue.password
+      );
+
+      console.log(newUser.toString());
     }
   }
 

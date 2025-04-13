@@ -1,1 +1,44 @@
-<p>profile works!</p>
+<mat-card class="profile-card">
+  <mat-card-title>Profilom</mat-card-title>
+
+  <form [formGroup]="profileForm" class="form-fields">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Felhasználónév</mat-label>
+      <input matInput formControlName="username" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Teljes név</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Születési dátum</mat-label>
+      <input matInput type="date" formControlName="dob" />
+    </mat-form-field>
+
+    <ng-container *ngIf="editMode">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Új jelszó</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Jelszó mégegyszer</mat-label>
+        <input matInput type="password" formControlName="confirmPassword" />
+      </mat-form-field>
+    </ng-container>
+  </form>
+
+  <mat-card-actions>
+    <button mat-flat-button color="primary" (click)="enableEditing()" *ngIf="!editMode">Szerkesztés</button>
+    <button mat-flat-button color="warn" (click)="cancelEdit()" *ngIf="editMode">Vissza</button>
+    <button mat-flat-button color="accent" (click)="saveChanges()" *ngIf="editMode">Mentés</button>
+    <button mat-flat-button color="warn" (click)="deleteProfile()">Profil törlése</button>
+  </mat-card-actions>
+</mat-card>

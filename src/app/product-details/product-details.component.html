@@ -5,8 +5,11 @@
   <div class="product-info">
     <h2>{{ selectedProduct?.name }}</h2>
     <p>{{ selectedProduct?.description }}</p>
-    <ul>
-      <!--<li><strong>Price:</strong> ${{ selectedProduct?.price }}</li>-->
-    </ul>
+    <p><strong>Ár:</strong> {{ selectedProduct?.price }} Ft</p>
+
+    <div *ngIf="selectedProduct">
+      <h3>Product Details:</h3>
+      <p>{{ getDetails() }}</p>
+    </div>
   </div>
 </div>
