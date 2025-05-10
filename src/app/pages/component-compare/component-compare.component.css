@@ -1,0 +1,55 @@
+.compare-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+}
+
+.checkboxes {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: white;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.mat-list-item {
+  cursor: pointer;
+}
+
+.mat-list-item:hover {
+  background-color: #f1f1f1;
+}
+
+h2{
+  text-align: center;
+}
+
+#bal{
+  width: 350px;
+}
+#jobb{
+  width: 350px;
+}

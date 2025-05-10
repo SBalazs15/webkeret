@@ -1,0 +1,63 @@
+<div class="compare-container">
+  <h2>Alkatrészek összehasonlítása</h2>
+
+  <div class="checkboxes">
+    <mat-checkbox [checked]="selectedType === 'cpu'" (change)="selectType('cpu')">
+      Processzorok
+    </mat-checkbox>
+    <mat-checkbox [checked]="selectedType === 'gpu'" (change)="selectType('gpu')">
+      Videókártyák
+    </mat-checkbox>
+  </div>
+
+  <div *ngIf="selectedType" class="search-section">
+    <!-- BAL KERESŐ -->
+    <div id="bal">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Keresés név alapján...</mat-label>
+        <input matInput [(ngModel)]="searchQueryLeft" [matAutocomplete]="autoLeft" />
+        <mat-autocomplete #autoLeft="matAutocomplete" (optionSelected)="onSelectLeft($event)">
+          <mat-option *ngFor="let item of filteredListLeft" [value]="item.name">
+            {{ item.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- JOBB KERESŐ -->
+    <div id="jobb">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Keresés név alapján...</mat-label>
+        <input matInput [(ngModel)]="searchQueryRight" [matAutocomplete]="autoRight" />
+        <mat-autocomplete #autoRight="matAutocomplete" (optionSelected)="onSelectRight($event)">
+          <mat-option *ngFor="let item of filteredListRight" [value]="item.name">
+            {{ item.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <!--Gomb ide középre igazítva-->
+  </div>
+  <!-- Gomb ide középre igazítva -->
+  <div style="width: 100%; text-align: center; margin-top: 20px;">
+    <button mat-raised-button color="primary" (click)="compareItems()">Összehasonlítás</button>
+  </div>
+
+  <!-- Összehasonlítási eredmények -->
+  <div *ngIf="comparisonLeft && comparisonRight" class="comparison-result" style="margin-top: 30px; display: flex; justify-content: space-between;">
+    <div style="width: 45%; border: 1px solid #ccc; padding: 10px;">
+      <h3>{{ comparisonLeft.name }}</h3>
+      <p *ngFor="let key of objectKeys(comparisonLeft)">
+        <strong>{{ key }}:</strong> {{ comparisonLeft[key] }}
+      </p>
+    </div>
+
+    <div style="width: 45%; border: 1px solid #ccc; padding: 10px;">
+      <h3>{{ comparisonRight.name }}</h3>
+      <p *ngFor="let key of objectKeys(comparisonRight)">
+        <strong>{{ key }}:</strong> {{ comparisonRight[key] }}
+      </p>
+    </div>
+  </div>
+
+</div>
