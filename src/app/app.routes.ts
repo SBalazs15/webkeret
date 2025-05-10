@@ -6,6 +6,8 @@ import { SavedComponent } from './saved/saved.component';
 import { ProfileComponent } from './profile/profile.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import {ComponentCompareComponent} from './pages/component-compare/component-compare.component';
+import {ConfigCompareComponent} from './pages/config-compare/config-compare.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,6 +17,8 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '**', component: HomeComponent },
+  { path: 'componentCompare', component: ComponentCompareComponent },
+  { path: 'configCompare', component: ConfigCompareComponent },
+  { path: '**', component: HomeComponent }
 ];
 

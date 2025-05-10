@@ -1,4 +1,3 @@
-// src/app/app.component.ts
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from './navbar.component';
@@ -14,4 +13,4 @@ import { NavbarComponent } from './navbar.component';
     </div>
   `
 })
-export class AppComponent { }
+export class AppComponent {}
