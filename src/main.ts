@@ -14,6 +14,14 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+    provideFirebaseApp(() => initializeApp({ projectId: "buildcompare-37483",
+      appId: "1:959499413579:web:91203ce6cc354ed82985ce",
+      storageBucket: "buildcompare-37483.firebasestorage.app",
+      apiKey: "AIzaSyAQt8bngGCFHa1cE3oxn97T0F3yxO5Pbt0",
+      authDomain: "buildcompare-37483.firebaseapp.com",
+      messagingSenderId: "959499413579" })),
+    provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
   ]
 });
