@@ -7,7 +7,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { User } from '../../model/user.model';
+import { User } from '../../model/user';
+import {AuthService} from '../services/auth.service';
 
 
 @Component({
@@ -27,8 +28,9 @@ import { User } from '../../model/user.model';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  signUpError= '';
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       dob: ['', Validators.required],
@@ -46,19 +48,55 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    if (this.registerForm.valid && !this.passwordMismatch) {
+    if (this.registerForm.valid) {
+
+      if(this.passwordMismatch){
+        this.signUpError='A jelszavak nem egyeznek';
+        return;
+      }
+
+
       const formValue = this.registerForm.value;
 
-      const newUser = new User(
-        formValue.name,
-        formValue.username,
-        formValue.dob,
-        formValue.email,
-        formValue.password
-      );
+      const userData: Partial<User> = {
+        username: formValue.username,
+        email: formValue.email,
+        name: formValue.name,
+        birthDate: formValue.dob ? formValue.dob.toISOString().split('T')[0] : null,
+        admin: '0',
+      }
 
-      console.log(newUser.toString());
+      const email = this.registerForm.get('email')?.value;
+      const pw = this.registerForm.get('password')?.value;
+
+      this.authService.signUp(email, pw, userData)
+        .then(userCredential => {
+          console.log('Sikeres regisztráció: ', userCredential.user);
+          this.authService.updateLoginStatus(true);
+          this.router.navigateByUrl('/home');
+        })
+        .catch(error => {
+          console.error('Regisztrációs hiba: ',error);
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              this.signUpError='Az az email már használatban van';
+              break;
+            case 'auth/invalid-email':
+              this.signUpError='Érvénytelen email';
+              break;
+            case 'auth/weak-password':
+              this.signUpError='Túl gyenge jelszó, legalább 6 karakter kell, hogy legyen';
+              break;
+            default:
+              this.signUpError='Hiba lépett fel a regisztráció során. Próbáld újra később';
+          }
+        });
     }
+    else{
+      this.signUpError = 'Javítsd a hibákat először';
+      return;
+    }
+
   }
 
   back():void{

@@ -1,13 +1,13 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core'; // <- fontos!
-import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from './services/auth.service';
-import { User } from '@angular/fire/auth';
+import {Component, inject, signal, WritableSignal} from '@angular/core';
+import {RouterModule} from '@angular/router';
+import {AuthService} from './services/auth.service';
+import {User as FirebaseUser}  from '@angular/fire/auth';
 
 @Component({
-  standalone: true,
-  selector: 'app-navbar',
   imports: [RouterModule, CommonModule],
+  selector: 'app-navbar',
+  standalone: true,
   template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
       <a class="navbar-brand" routerLink="/">BC</a>
@@ -18,7 +18,7 @@ import { User } from '@angular/fire/auth';
         <li class="nav-item">
           <a class="nav-link" routerLink="/compare">Összehasonlító</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="isLoggedIn()">
           <a class="nav-link" routerLink="/saved">Mentett konfigurációk</a>
         </li>
         <li class="nav-item" *ngIf="isLoggedIn()">
@@ -28,7 +28,7 @@ import { User } from '@angular/fire/auth';
 
       <ul class="navbar-nav ms-auto">
         <li>
-          <a class="nav-link" style="margin-right: 20px;" *ngIf="isLoggedIn()" routerLink="/admin">Admin</a>
+          <a class="nav-link" style="margin-right: 20px;" *ngIf="isLoggedIn() && isAdmin" routerLink="/admin">Admin</a>
         </li>
         <li class="nav-item" *ngIf="!isLoggedIn()">
           <a class="btn btn-outline-light" routerLink="/login">Bejelentkezés</a>
@@ -42,10 +42,21 @@ import { User } from '@angular/fire/auth';
 })
 export class NavbarComponent {
   private authService = inject(AuthService);
-  user: WritableSignal<User | null> = signal<User | null>(null); // <- most már módosítható
+  user: WritableSignal<FirebaseUser | null> = signal<FirebaseUser | null>(null);
+  isAdmin: boolean = false;
 
   constructor() {
-    this.authService.isLoggedIn().subscribe((u: User | null) => this.user.set(u));
+    this.authService.isLoggedIn().subscribe((u: FirebaseUser | null) => {
+      this.user.set(u);
+
+      if (u) {
+        this.authService.isAdmin(u.uid).then(isAdmin => {
+          this.isAdmin = isAdmin;
+        });
+      } else {
+        this.isAdmin = false;
+      }
+    });
   }
 
   isLoggedIn(): boolean {
