@@ -1,1 +1,782 @@
-<p>admin works!</p>
+<mat-card class="admin-container">
+  <h2>Termék hozzáadása</h2>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Termék típusa</mat-label>
+    <mat-select [(ngModel)]="selectedCategory" name="category" (selectionChange)="onCategoryChange()">
+      <mat-option *ngFor="let category of availableCategories" [value]="category">
+        {{ category }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <form *ngIf="selectedCategory === 'Case'" (ngSubmit)="saveProduct()">
+    <div class="form-grid">
+      <!-- Bal oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Név</mat-label>
+          <input matInput [(ngModel)]="caseData.name" name="name" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Leírás</mat-label>
+          <input matInput [(ngModel)]="caseData.description" name="description" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Kép URL</mat-label>
+          <input matInput [(ngModel)]="caseData.image" name="image" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Szélesség (mm)</mat-label>
+          <input matInput type="number" [(ngModel)]="caseData.szelesseg" name="szelesseg" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Magasság (mm)</mat-label>
+          <input matInput type="number" [(ngModel)]="caseData.magassag" name="magassag" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Mélység (mm)</mat-label>
+          <input matInput type="number" [(ngModel)]="caseData.melyeg" name="melyeg" />
+        </mat-form-field>
+      </div>
+
+      <!-- Jobb oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Súly (kg)</mat-label>
+          <input matInput type="number" [(ngModel)]="caseData.suly" name="suly" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ár</mat-label>
+          <input matInput type="number" [(ngModel)]="caseData.price" name="price" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ventillátorok száma</mat-label>
+          <input matInput type="number" [(ngModel)]="caseData.ventCount" name="ventCount" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>USB portok száma</mat-label>
+          <input matInput type="number" [(ngModel)]="caseData.USBcount" name="USBcount" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ventillátor méretek (pl. 120, 140)</mat-label>
+          <input
+            matInput
+            [ngModel]="caseData.ventSizes.join(', ')"
+            (ngModelChange)="updateVentSizes($event)"
+            name="ventSizes"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Alaplap méretek (pl. ATX, mATX)</mat-label>
+          <input
+            matInput
+            [ngModel]="caseData.motherBoardSizes.join(', ')"
+            (ngModelChange)="updateMotherboardSizes($event)"
+            name="motherBoardSizes"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </div>
+  </form>
+
+  <!-- Alaplap termék hozzáadása -->
+  <form *ngIf="selectedCategory === 'MotherBoard'" (ngSubmit)="saveProduct()">
+    <div class="form-grid">
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Név</mat-label>
+          <input matInput [(ngModel)]="motherboardData.name" name="mbName" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Leírás</mat-label>
+          <input matInput [(ngModel)]="motherboardData.description" name="mbDescription" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Kép URL</mat-label>
+          <input matInput [(ngModel)]="motherboardData.image" name="mbImage" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ár</mat-label>
+          <input matInput type="number" [(ngModel)]="motherboardData.price" name="mbPrice" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Socket</mat-label>
+          <input matInput [(ngModel)]="motherboardData.socket" name="socket" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Chipset</mat-label>
+          <input matInput [(ngModel)]="motherboardData.chipset" name="chipset" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Max memória (GB)</mat-label>
+          <input matInput type="number" [(ngModel)]="motherboardData.maxMemori" name="maxMemori" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Memória foglalatok száma</mat-label>
+          <input matInput type="number" [(ngModel)]="motherboardData.memoriSockets" name="memoriSockets" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Memória típusa</mat-label>
+          <input matInput [(ngModel)]="motherboardData.memoriType" name="memoriType" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Alaplap méret (pl. ATX)</mat-label>
+          <input matInput [(ngModel)]="motherboardData.meret" name="meret" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Fizikai méret (pl. 320x440)</mat-label>
+          <input matInput [(ngModel)]="motherboardData.size" name="size" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>USB portok száma</mat-label>
+          <input matInput type="number" [(ngModel)]="motherboardData.USBPortCount" name="USBPortCount" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Sata csatlakozók száma</mat-label>
+          <input matInput type="number" [(ngModel)]="motherboardData.sataCount" name="sataCount" />
+        </mat-form-field>
+
+
+        <mat-form-field appearance="fill">
+          <mat-label>m2 csatlakozók száma</mat-label>
+          <input matInput type="number" [(ngModel)]="motherboardData.m2count" name="m2count" />
+        </mat-form-field>
+
+        <div class="form-section">
+          <h3>Portok</h3>
+          <div *ngFor="let port of portsArray; let i = index" class="port-row">
+            <mat-form-field appearance="fill" class="port-input">
+              <mat-label>Port neve</mat-label>
+              <input matInput [(ngModel)]="portsArray[i].name" name="portName{{i}}" />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="port-input">
+              <mat-label>Darabszám</mat-label>
+              <input matInput type="number" [(ngModel)]="portsArray[i].count" name="portCount{{i}}" />
+            </mat-form-field>
+
+            <button mat-icon-button color="warn" (click)="removePortField(i)" aria-label="Törlés">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <button mat-button color="primary" type="button" (click)="addPortField()">
+            + Port hozzáadása
+          </button>
+        </div>
+
+
+        <mat-checkbox [(ngModel)]="motherboardData.isHdmi" name="isHdmi">
+          HDMI
+        </mat-checkbox>
+
+        <mat-checkbox [(ngModel)]="motherboardData.isDisplayPort" name="isDisplayPort">
+          Displayport
+        </mat-checkbox>
+
+        <mat-checkbox [(ngModel)]="motherboardData.isHangKartya" name="isHangKartya">
+          Hangkártya
+        </mat-checkbox>
+
+        <mat-checkbox [(ngModel)]="motherboardData.wifi" name="wifi">
+          WiFi
+        </mat-checkbox>
+
+        <mat-checkbox [(ngModel)]="motherboardData.bluetooth" name="bluetooth">
+          Bluetooth
+        </mat-checkbox>
+
+        <mat-checkbox [(ngModel)]="motherboardData.isServer" name="isServer">
+          Server Alaplap
+        </mat-checkbox>
+
+      </div>
+    </div>
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </div>
+  </form>
+
+    <form *ngIf="selectedCategory === 'CPU'" (ngSubmit)="saveProduct()">
+      <div class="form-grid">
+        <div class="form-column">
+          <mat-form-field appearance="fill">
+            <mat-label>Név</mat-label>
+            <input matInput [(ngModel)]="cpuData.name" name="cpuName" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Leírás</mat-label>
+            <input matInput [(ngModel)]="cpuData.description" name="cpuDescription" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Kép URL</mat-label>
+            <input matInput [(ngModel)]="cpuData.image" name="cpuImage" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Ár</mat-label>
+            <input matInput type="number" [(ngModel)]="cpuData.price" name="cpuPrice" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Magok száma</mat-label>
+            <input matInput type="number" [(ngModel)]="cpuData.cores" name="cpuCores" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Szálak száma</mat-label>
+            <input matInput type="number" [(ngModel)]="cpuData.thread" name="cpuThreads" />
+          </mat-form-field>
+        </div>
+
+        <div class="form-column">
+          <mat-form-field appearance="fill">
+            <mat-label>Órajel (GHz)</mat-label>
+            <input matInput type="number" [(ngModel)]="cpuData.clockSpeed" name="cpuClockSpeed" step="0.1" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Turbo Órajel (GHz)</mat-label>
+            <input matInput type="number" [(ngModel)]="cpuData.turboClockSpeed" name="cpuTurboClockSpeed" step="0.1" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>TDP (Watt)</mat-label>
+            <input matInput type="number" [(ngModel)]="cpuData.TDP" name="cpuTDP" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Socket</mat-label>
+            <input matInput [(ngModel)]="cpuData.socket" name="cpuSocket" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Integrált GPU</mat-label>
+            <input matInput [(ngModel)]="cpuData.integratedGPU" name="cpuIGPU" />
+          </mat-form-field>
+
+          <div class="form-section">
+            <h3>Cache</h3>
+            <div *ngFor="let c of cacheArray; let i = index" class="port-row">
+              <mat-form-field appearance="fill" class="port-input">
+                <mat-label>Cache típus</mat-label>
+                <input matInput [(ngModel)]="cacheArray[i].name" name="cacheName{{i}}" />
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="port-input">
+                <mat-label>Méret (MB)</mat-label>
+                <input matInput type="number" [(ngModel)]="cacheArray[i].size" name="cacheSize{{i}}" />
+              </mat-form-field>
+
+              <button mat-icon-button color="warn" (click)="removeCacheField(i)" aria-label="Törlés">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+            <button mat-button color="primary" type="button" (click)="addCacheField()">
+              + Cache hozzáadása
+            </button>
+          </div>
+        </div>
+      </div>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </div>
+  </form>
+
+  <form *ngIf="selectedCategory === 'Cooler'" (ngSubmit)="saveProduct()">
+    <div class="form-grid">
+      <!-- Bal oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Név</mat-label>
+          <input matInput [(ngModel)]="cooler.name" name="coolerName" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Leírás</mat-label>
+          <input matInput [(ngModel)]="cooler.description" name="coolerDescription" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Kép URL</mat-label>
+          <input matInput [(ngModel)]="cooler.image" name="coolerImage" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ár</mat-label>
+          <input matInput type="number" [(ngModel)]="cooler.price" name="coolerPrice" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ventillátor méret</mat-label>
+          <input matInput [(ngModel)]="cooler.ventSize" name="coolerVentSize" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ventillátor sebesség</mat-label>
+          <input matInput [(ngModel)]="cooler.ventSpeed" name="coolerVentSpeed" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Zajszint (dBA)</mat-label>
+          <input matInput [(ngModel)]="cooler.maxNoise" name="coolerMaxNoise" />
+        </mat-form-field>
+      </div>
+
+      <!-- Jobb oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Légáramlás (CFM)</mat-label>
+          <input matInput [(ngModel)]="cooler.airFlow" name="coolerAirFlow" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Hűtő mérete (mm)</mat-label>
+          <input matInput [(ngModel)]="cooler.size" name="coolerSize" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Súly (g)</mat-label>
+          <input matInput type="number" [(ngModel)]="cooler.wieght" name="coolerWeight" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>TDP (W)</mat-label>
+          <input matInput type="number" [(ngModel)]="cooler.TDP" name="coolerTDP" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Hűtő típusa (Léghűtő)</mat-label>
+          <input matInput type="number" [(ngModel)]="cooler.type" name="type" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Socket kompatibilitás (pl. AM4, LGA1200)</mat-label>
+          <input
+            matInput
+            [ngModel]="cooler.socket.join(', ')"
+            (ngModelChange)="updateCoolerSockets($event)"
+            name="coolerSockets"
+          />
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="cooler.LED" name="coolerLED">RGB LED</mat-checkbox>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </div>
+  </form>
+
+
+
+  <form *ngIf="selectedCategory === 'RAM'" (ngSubmit)="saveProduct()">
+    <div class="form-grid">
+      <!-- Bal oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Név</mat-label>
+          <input matInput [(ngModel)]="ramData.name" name="coolerName" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Leírás</mat-label>
+          <input matInput [(ngModel)]="ramData.description" name="coolerDescription" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Kép URL</mat-label>
+          <input matInput [(ngModel)]="ramData.image" name="coolerImage" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ár</mat-label>
+          <input matInput type="number" [(ngModel)]="ramData.price" name="coolerPrice" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Sebesség (Mzh)</mat-label>
+          <input matInput [(ngModel)]="ramData.speed" name="speed" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Memória méret (GB)</mat-label>
+          <input matInput type="number" [(ngModel)]="ramData.memorySize" name="memorySize" />
+        </mat-form-field>
+      </div>
+
+      <!-- Jobb oldal -->
+      <div class="form-column">
+
+        <mat-form-field appearance="fill">
+          <mat-label>Csomagolás</mat-label>
+          <input matInput [(ngModel)]="ramData.package" name="package" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Memória típus</mat-label>
+          <input matInput [(ngModel)]="ramData.type" name="type" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Memóriakésleltetés </mat-label>
+          <input matInput [(ngModel)]="ramData.kesleltetes" name="kesleltetes" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Feszültség (V)</mat-label>
+          <input matInput type="number" [(ngModel)]="ramData.voltage" name="voltage" />
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="ramData.hutoborda" name="coolerLED">Hűtőborda</mat-checkbox>
+        <mat-checkbox [(ngModel)]="ramData.LED" name="coolerLED">RGB LED</mat-checkbox>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </div>
+  </form>
+
+  <form *ngIf="selectedCategory === 'GPU'" (ngSubmit)="saveProduct()">
+    <div class="form-grid">
+      <!-- Bal oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Név</mat-label>
+          <input matInput [(ngModel)]="gpuData.name" name="gpuName" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Leírás</mat-label>
+          <input matInput [(ngModel)]="gpuData.description" name="gpuDescription" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Kép URL</mat-label>
+          <input matInput [(ngModel)]="gpuData.image" name="gpuImage" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ár</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.price" name="gpuPrice" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>GPU sebesség (MHz)</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.chipSpeed" name="chipSpeed" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Memória sebesség (MHz)</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.chipMemoriSpeed" name="chipMemoriSpeed" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ajánlott TDP</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.recomendedTdp" name="recomendedTdp" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Chipset</mat-label>
+          <input matInput [(ngModel)]="gpuData.chipset" name="chipset" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Chipset család</mat-label>
+          <input matInput [(ngModel)]="gpuData.chipsetfamily" name="chipsetfamily" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Hűtés típusa</mat-label>
+          <input matInput [(ngModel)]="gpuData.cooling" name="cooling" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ventilátorok száma</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.ventcount" name="ventcount" />
+        </mat-form-field>
+
+        <!-- Portok -->
+        <h3>Videó kimenetek</h3>
+
+        <table class="video-outputs">
+          <tr>
+            <td><mat-checkbox (change)="updateVGA($event.checked)">VGA</mat-checkbox></td>
+            <td><mat-form-field *ngIf="gpuData.VGA.has(true)" appearance="fill">
+              <input matInput type="number" [value]="gpuData.VGA.get(true) || ''" (input)="onVGAInput($event)" />
+            </mat-form-field></td>
+          </tr>
+          <tr>
+            <td><mat-checkbox (change)="updateDVI($event.checked)">DVI</mat-checkbox></td>
+            <td><mat-form-field *ngIf="gpuData.DVI.has(true)" appearance="fill">
+              <input matInput type="number" [value]="gpuData.DVI.get(true) || ''" (input)="onDVIInput($event)" />
+            </mat-form-field></td>
+          </tr>
+          <tr>
+            <td><mat-checkbox (change)="updateHDMI($event.checked)">HDMI</mat-checkbox></td>
+            <td><mat-form-field *ngIf="gpuData.HDMI.has(true)" appearance="fill">
+              <input matInput type="number" [value]="gpuData.HDMI.get(true) || ''" (input)="onHDMIInput($event)" />
+            </mat-form-field></td>
+          </tr>
+          <tr>
+            <td><mat-checkbox (change)="updateDisplay($event.checked)">DisplayPort</mat-checkbox></td>
+            <td><mat-form-field *ngIf="gpuData.Display.has(true)" appearance="fill">
+              <input matInput type="number" [value]="gpuData.Display.get(true) || ''" (input)="onDisplayInput($event)" />
+            </mat-form-field></td>
+          </tr>
+          <tr>
+            <td><mat-checkbox (change)="updateTypeC($event.checked)">USB Type-C</mat-checkbox></td>
+            <td><mat-form-field *ngIf="gpuData.Type_C.has(true)" appearance="fill">
+              <input matInput type="number" [value]="gpuData.Type_C.get(true) || ''" (input)="onTypeCInput($event)" />
+            </mat-form-field></td>
+          </tr>
+        </table>
+
+
+      </div>
+
+      <!-- Jobb oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Memória méret (GB)</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.memoriAmount" name="memoriAmount" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Memória típus</mat-label>
+          <input matInput [(ngModel)]="gpuData.memoryType" name="memoryType" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Sávszélesség (bit)</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.memorySavszelesseg" name="memorySavszelesseg" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Max felbontás</mat-label>
+          <input matInput [(ngModel)]="gpuData.maxFelbontas" name="maxFelbontas" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>DirectX verzió</mat-label>
+          <input matInput [(ngModel)]="gpuData.DirectX" name="DirectX" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Táp csatlakozó típusa</mat-label>
+          <input matInput [(ngModel)]="gpuData.TapCsatlakozo" name="TapCsatlakozo" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Szélesség (mm)</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.szelesseg" name="szelesseg" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Hosszúság (mm)</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.hosszusag" name="hosszusag" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Vastagság (mm)</mat-label>
+          <input matInput type="number" [(ngModel)]="gpuData.vastagsag" name="vastagsag" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Támogatott technológiák (pl. RayTracing, FreeSync)</mat-label>
+          <input
+            matInput
+            [ngModel]="gpuData.usedTech.join(', ')"
+            (ngModelChange)="updateUsedTech($event)"
+            name="usedTech"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>DLSS verziók (pl. 1.0, 2.0, 3.0)</mat-label>
+          <input
+            matInput
+            [ngModel]="gpuData.DLSS.join(', ')"
+            (ngModelChange)="updateDLSS($event)"
+            name="dlssVersions"
+          />
+        </mat-form-field>
+
+
+        <mat-form-field appearance="fill">
+          <mat-label>Szín</mat-label>
+          <input matInput [(ngModel)]="gpuData.color" name="color" />
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="gpuData.LED" name="gpuLED">RGB LED</mat-checkbox>
+      </div>
+    </div>
+
+      <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </div>
+
+  </form>
+
+  <form *ngIf="selectedCategory === 'PSU'" (ngSubmit)="saveProduct()">
+    <div class="form-grid">
+      <!-- Bal oldal -->
+      <div class="form-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Név</mat-label>
+          <input matInput [(ngModel)]="psuData.name" name="psuName" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Leírás</mat-label>
+          <input matInput [(ngModel)]="psuData.description" name="psuDescription" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Kép URL</mat-label>
+          <input matInput [(ngModel)]="psuData.image" name="psuImage" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ár</mat-label>
+          <input matInput type="number" [(ngModel)]="psuData.price" name="psuPrice" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Teljesítmény (W)</mat-label>
+          <input matInput type="number" [(ngModel)]="psuData.power" name="psuPower" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Értékelés</mat-label>
+          <input matInput [(ngModel)]="psuData.rate" name="psuRate" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Zajszint</mat-label>
+          <input matInput [(ngModel)]="psuData.noise" name="psuNoise" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Típus</mat-label>
+          <input matInput [(ngModel)]="psuData.type" name="psuType" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>PFC</mat-label>
+          <input matInput [(ngModel)]="psuData.PFC" name="psuPFC" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ventilátor méret(mm)</mat-label>
+          <input matInput type="number" [(ngModel)]="psuData.ventSize" name="psuVentSize" />
+        </mat-form-field>
+      </div>
+
+      <!-- Jobb oldal -->
+      <div class="form-column">
+        <!-- Dinamikusan hozzáadott mezők -->
+        <div class="form-section">
+          <h3>Maximális  áramfelvétel</h3>
+          <div *ngFor="let intake of maxIntakeArray; let i = index" class="port-row">
+            <mat-form-field appearance="fill" class="port-input">
+              <mat-label>Áram típus</mat-label>
+              <input matInput [(ngModel)]="maxIntakeArray[i].name" name="maxIntakeName{{i}}" />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="port-input">
+              <mat-label>Méret (A)</mat-label>
+              <input matInput type="number" [(ngModel)]="maxIntakeArray[i].value" name="maxIntakeValue{{i}}" />
+            </mat-form-field>
+
+            <button mat-icon-button color="warn" (click)="removeMaxIntakeField(i)" aria-label="Törlés">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <button mat-button color="primary" type="button" (click)="addMaxIntakeField()">
+            + Max belépési áram hozzáadása
+          </button>
+        </div>
+
+
+        <!-- Csatlakozók checkbox -->
+        <h3>Csatlakozók</h3>
+        <table class="psu-connectors">
+          <tr>
+            <td><mat-checkbox (change)="updateFDD($event.checked)">FDD</mat-checkbox></td>
+            <td><mat-form-field *ngIf="psuData.FDD.has(true)" appearance="fill">
+              <input matInput type="number" [value]="psuData.FDD.get(true) || ''" (input)="onFDDInput($event)" />
+            </mat-form-field></td>
+          </tr>
+          <tr>
+            <td><mat-checkbox (change)="updateHDD($event.checked)">HDD</mat-checkbox></td>
+            <td><mat-form-field *ngIf="psuData.HDD.has(true)" appearance="fill">
+              <input matInput type="number" [value]="psuData.HDD.get(true) || ''" (input)="onHDDInput($event)" />
+            </mat-form-field></td>
+          </tr>
+          <tr>
+            <td><mat-checkbox (change)="updateSATA($event.checked)">SATA</mat-checkbox></td>
+            <td><mat-form-field *ngIf="psuData.SATA.has(true)" appearance="fill">
+              <input matInput type="number" [value]="psuData.SATA.get(true) || ''" (input)="onSATAInput($event)" />
+            </mat-form-field></td>
+          </tr>
+          <tr>
+            <td><mat-checkbox (change)="updatePCI_Express($event.checked)">PCI-Express</mat-checkbox></td>
+            <td><mat-form-field *ngIf="psuData.PCI_Expresss.has(true)" appearance="fill">
+              <input matInput type="number" [value]="psuData.PCI_Expresss.get(true) || ''" (input)="onPCI_ExpressInput($event)" />
+            </mat-form-field></td>
+          </tr>
+        </table>
+
+        <!-- Kapcsolók -->
+        <h3>Kapcsolók</h3>
+        <mat-checkbox [(ngModel)]="psuData.tapKapcs" name="psuTapKapcs">Tap kapcsoló</mat-checkbox>
+        <mat-checkbox [(ngModel)]="psuData.v110Kapcs" name="psuV110Kapcs">110V kapcsoló</mat-checkbox>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit">Mentés</button>
+    </div>
+  </form>
+
+
+
+
+
+</mat-card>

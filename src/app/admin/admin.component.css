@@ -1,0 +1,78 @@
+.admin-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-grid {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.form-column {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-actions {
+  margin-top: 20px;
+  text-align: right;
+}
+.form-section {
+  margin-top: 20px;
+}
+
+.port-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.port-input {
+  flex: 1 1 200px;
+  min-width: 150px;
+}
+
+.video-output {
+  margin-bottom: 10px;
+}
+
+.checkbox {
+  margin-right: 10px;
+}
+
+
+.video-outputs {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+
+.video-outputs td {
+  padding: 10px;
+  vertical-align: middle;
+}
+
+
+.video-outputs td mat-form-field {
+  width: 250px;
+}
+
+
+.video-outputs td mat-form-field input {
+  text-align: right;
+}
+
+
+
+
