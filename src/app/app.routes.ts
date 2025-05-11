@@ -8,17 +8,20 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import {ComponentCompareComponent} from './pages/component-compare/component-compare.component';
 import {ConfigCompareComponent} from './pages/config-compare/config-compare.component';
+import {AdminComponent} from './admin/admin.component';
+import {authGuard, publicGuard} from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'build', component: BuildComponent },
   { path: 'compare', component: CompareComponent },
-  { path: 'saved', component: SavedComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'saved', component: SavedComponent, canActivate: [authGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [publicGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [publicGuard]  },
   { path: 'componentCompare', component: ComponentCompareComponent },
   { path: 'configCompare', component: ConfigCompareComponent },
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard]  },
   { path: '**', component: HomeComponent }
 ];
 

@@ -12,9 +12,6 @@ import { environment } from './app/environment';
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
     provideFirebaseApp(() => initializeApp({ projectId: "buildcompare-37483",
       appId: "1:959499413579:web:91203ce6cc354ed82985ce",
       storageBucket: "buildcompare-37483.firebasestorage.app",

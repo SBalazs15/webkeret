@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core'; // <- fontos!
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
+import { User } from '@angular/fire/auth';
 
 @Component({
   standalone: true,
@@ -16,30 +18,41 @@ import { CommonModule } from '@angular/common';
         <li class="nav-item">
           <a class="nav-link" routerLink="/compare">Összehasonlító</a>
         </li>
-        <li class="nav-item" >
+        <li class="nav-item">
           <a class="nav-link" routerLink="/saved">Mentett konfigurációk</a>
         </li>
-        <li class="nav-item" > <!--*ngIf="isLoggedIn"-->
+        <li class="nav-item" *ngIf="isLoggedIn()">
           <a class="nav-link" routerLink="/profile">Profil</a>
         </li>
       </ul>
 
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item" *ngIf="!isLoggedIn">
+        <li>
+          <a class="nav-link" style="margin-right: 20px;" *ngIf="isLoggedIn()" routerLink="/admin">Admin</a>
+        </li>
+        <li class="nav-item" *ngIf="!isLoggedIn()">
           <a class="btn btn-outline-light" routerLink="/login">Bejelentkezés</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
-          <button class="btn btn-outline-light" (click)="toggleLogin()">Kijelentkezés</button>
+        <li class="nav-item" *ngIf="isLoggedIn()">
+          <button class="btn btn-outline-light" (click)="logout()">Kijelentkezés</button>
         </li>
       </ul>
     </nav>
-
   `
 })
 export class NavbarComponent {
-  isLoggedIn = false;
+  private authService = inject(AuthService);
+  user: WritableSignal<User | null> = signal<User | null>(null); // <- most már módosítható
 
-  toggleLogin() {
-    this.isLoggedIn = !this.isLoggedIn;
+  constructor() {
+    this.authService.isLoggedIn().subscribe((u: User | null) => this.user.set(u));
+  }
+
+  isLoggedIn(): boolean {
+    return this.user() !== null;
+  }
+
+  logout(): void {
+    this.authService.singOut();
   }
 }
