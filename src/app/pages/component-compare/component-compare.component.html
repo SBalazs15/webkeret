@@ -10,6 +10,12 @@
       <mat-checkbox [checked]="selectedType === 'gpu'" (change)="selectType('gpu')" [disabled]="isComparing && (selectedLeft || selectedRight)">
         Videókártyák
       </mat-checkbox>
+      <mat-checkbox [checked]="selectedType === 'motherboard'" (change)="selectType('motherboard')" [disabled]="isComparing && (selectedLeft || selectedRight)">
+        Alaplapok
+      </mat-checkbox>
+      <mat-checkbox [checked]="selectedType === 'ram'" (change)="selectType('ram')" [disabled]="isComparing && (selectedLeft || selectedRight)">
+        RAM-ok
+      </mat-checkbox>
     </div>
 
     <div *ngIf="selectedType" class="search-section">
@@ -96,43 +102,121 @@
         <p><strong>Color:</strong> {{ gpu.color }}</p>
         <p><strong>Used Technologies:</strong> {{ gpu.usedTech.join(', ') }}</p>
 
-        <div><strong>DLSS Versions:</strong>
-          <ul>
-            <li *ngFor="let d of gpu.DLSS">{{ d }}</li>
-          </ul>
-        </div>
+        <p><strong>DLSS Versions:</strong>
+          <ng-container *ngIf="gpu?.DLSS && !(gpu.DLSS.length === 1 && gpu.DLSS[0] === '-'); else noDLSS">
+            <ul>
+              <li *ngFor="let d of gpu.DLSS">{{ d }}</li>
+            </ul>
+          </ng-container>
+        </p>
+
+        <ng-template #noDLSS>
+          <span style="margin-left: 2%">Nincs</span>
+        </ng-template>
+
+
+
 
         <div><strong>Connections:</strong>
+
           <p>VGA:
-            <span *ngFor="let item of mapToArray(gpu.VGA)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.VGA).length; else noVGA">
+      <span *ngFor="let item of mapToArray(gpu.VGA)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noVGA>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>DVI:
-            <span *ngFor="let item of mapToArray(gpu.DVI)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.DVI).length; else noDVI">
+      <span *ngFor="let item of mapToArray(gpu.DVI)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noDVI>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>HDMI:
-            <span *ngFor="let item of mapToArray(gpu.HDMI)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.HDMI).length; else noHDMI">
+      <span *ngFor="let item of mapToArray(gpu.HDMI)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noHDMI>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>DisplayPort:
-            <span *ngFor="let item of mapToArray(gpu.Display)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.Display).length; else noDisplay">
+      <span *ngFor="let item of mapToArray(gpu.Display)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noDisplay>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>Type-C:
-            <span *ngFor="let item of mapToArray(gpu.Type_C)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.Type_C).length; else noTypeC">
+      <span *ngFor="let item of mapToArray(gpu.Type_C)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noTypeC>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
         </div>
+
 
         <p><strong>Dimensions:</strong> {{ gpu.szelesseg }} x {{ gpu.hosszusag }} x {{ gpu.vastagsag }} mm</p>
       </ng-container>
 
+      <!-- Motherboard rész -->
+      <ng-container *ngIf="leftMotherboard as mb">
+        <p><strong>Socket:</strong> {{ mb.socket }}</p>
+        <p><strong>Chipset:</strong> {{ mb.chipset }}</p>
+        <p><strong>Szerver Alaplap:</strong> {{ boolLabel(mb.isServer) }}</p>
+        <p><strong>Max Memória:</strong> {{ mb.maxMemori }} GB</p>
+        <p><strong>Memória Foglalatok:</strong> {{ mb.memoriSockets }}</p>
+        <p><strong>Memória Típus:</strong> {{ mb.memoriType }}</p>
+        <p><strong>SATA csatlakozók:</strong> {{ mb.sataCount }}</p>
+        <p><strong>WiFi:</strong> {{ boolLabel(mb.wifi) }}</p>
+        <p><strong>Bluetooth:</strong> {{ boolLabel(mb.bluetooth) }}</p>
+        <p><strong>HDMI:</strong> {{ boolLabel(mb.isHdmi) }}</p>
+        <p><strong>DisplayPort:</strong> {{ boolLabel(mb.isDisplayPort) }}</p>
+        <p><strong>USB Portok száma:</strong> {{ mb.USBPortCount }}</p>
+        <p><strong>Hangkártya:</strong> {{ boolLabel(mb.isHangKartya) }}</p>
+        <p><strong>Méret:</strong> {{ mb.meret }}</p>
+        <p><strong>Fizikai méret:</strong> {{ mb.size }}</p>
+        <p><strong>M.2 csatlakozók száma:</strong> {{ mb.m2count }}</p>
+        <div>
+          <strong>Portok:</strong>
+          <div *ngFor="let p of mapToArray(mb.ports)">
+            {{ p.key }}: {{ p.value }}
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- RAM rész -->
+      <ng-container *ngIf="leftRAM as ram">
+        <p><strong>Memória Méret:</strong> {{ ram.memorySize }} GB</p>
+        <p><strong>Sebesség:</strong> {{ ram.speed }} MHz</p>
+        <p><strong>Típus:</strong> {{ ram.type }}</p>
+        <p><strong>Késleltetés:</strong> {{ ram.kesleltetes }}</p>
+        <p><strong>Hűtőborda:</strong> {{ boolLabel(ram.hutoborda) }}</p>
+        <p><strong>LED világítás:</strong> {{ boolLabel(ram.LED) }}</p>
+        <p><strong>Feszültség:</strong> {{ ram.voltage }} V</p>
+        <p><strong>Kiszerelés:</strong> {{ ram.package }}</p>
+      </ng-container>
     </div>
 
     <!-- JOBB OLDAL -->
@@ -175,43 +259,121 @@
         <p><strong>Color:</strong> {{ gpu.color }}</p>
         <p><strong>Used Technologies:</strong> {{ gpu.usedTech.join(', ') }}</p>
 
-        <div><strong>DLSS Versions:</strong>
-          <ul>
-            <li *ngFor="let d of gpu.DLSS">{{ d }}</li>
-          </ul>
-        </div>
+        <p><strong>DLSS Versions:</strong>
+          <ng-container *ngIf="gpu?.DLSS && !(gpu.DLSS.length === 1 && gpu.DLSS[0] === '-'); else noDLSS">
+            <ul>
+              <li *ngFor="let d of gpu.DLSS">{{ d }}</li>
+            </ul>
+          </ng-container>
+        </p>
+
+        <ng-template #noDLSS>
+          <span style="margin-left: 2%">Nincs</span>
+        </ng-template>
+
+
+
 
         <div><strong>Connections:</strong>
+
           <p>VGA:
-            <span *ngFor="let item of mapToArray(gpu.VGA)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.VGA).length; else noVGA">
+      <span *ngFor="let item of mapToArray(gpu.VGA)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noVGA>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>DVI:
-            <span *ngFor="let item of mapToArray(gpu.DVI)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.DVI).length; else noDVI">
+      <span *ngFor="let item of mapToArray(gpu.DVI)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noDVI>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>HDMI:
-            <span *ngFor="let item of mapToArray(gpu.HDMI)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.HDMI).length; else noHDMI">
+      <span *ngFor="let item of mapToArray(gpu.HDMI)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noHDMI>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>DisplayPort:
-            <span *ngFor="let item of mapToArray(gpu.Display)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.Display).length; else noDisplay">
+      <span *ngFor="let item of mapToArray(gpu.Display)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noDisplay>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
           <p>Type-C:
-            <span *ngFor="let item of mapToArray(gpu.Type_C)">
-            {{ boolLabel(item.key) }}: {{ item.value }}
-          </span>
+            <ng-container *ngIf="mapToArray(gpu.Type_C).length; else noTypeC">
+      <span *ngFor="let item of mapToArray(gpu.Type_C)">
+        {{ boolLabel(item.key) }}: {{ item.value }}
+      </span>
+            </ng-container>
+            <ng-template #noTypeC>
+              <span>Nem</span>
+            </ng-template>
           </p>
+
         </div>
+
 
         <p><strong>Dimensions:</strong> {{ gpu.szelesseg }} x {{ gpu.hosszusag }} x {{ gpu.vastagsag }} mm</p>
       </ng-container>
 
+      <!-- Motherboard rész -->
+      <ng-container *ngIf="rightMotherboard as mb">
+        <p><strong>Socket:</strong> {{ mb.socket }}</p>
+        <p><strong>Chipset:</strong> {{ mb.chipset }}</p>
+        <p><strong>Szerver Alaplap:</strong> {{ boolLabel(mb.isServer) }}</p>
+        <p><strong>Max Memória:</strong> {{ mb.maxMemori }} GB</p>
+        <p><strong>Memória Foglalatok:</strong> {{ mb.memoriSockets }}</p>
+        <p><strong>Memória Típus:</strong> {{ mb.memoriType }}</p>
+        <p><strong>SATA csatlakozók:</strong> {{ mb.sataCount }}</p>
+        <p><strong>WiFi:</strong> {{ boolLabel(mb.wifi) }}</p>
+        <p><strong>Bluetooth:</strong> {{ boolLabel(mb.bluetooth) }}</p>
+        <p><strong>HDMI:</strong> {{ boolLabel(mb.isHdmi) }}</p>
+        <p><strong>DisplayPort:</strong> {{ boolLabel(mb.isDisplayPort) }}</p>
+        <p><strong>USB Portok száma:</strong> {{ mb.USBPortCount }}</p>
+        <p><strong>Hangkártya:</strong> {{ boolLabel(mb.isHangKartya) }}</p>
+        <p><strong>Méret:</strong> {{ mb.meret }}</p>
+        <p><strong>Fizikai méret:</strong> {{ mb.size }}</p>
+        <p><strong>M.2 csatlakozók száma:</strong> {{ mb.m2count }}</p>
+        <div>
+          <strong>Portok:</strong>
+          <div *ngFor="let p of mapToArray(mb.ports)">
+            {{ p.key }}: {{ p.value }}
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- RAM rész -->
+      <ng-container *ngIf="rightRAM as ram">
+        <p><strong>Memória Méret:</strong> {{ ram.memorySize }} GB</p>
+        <p><strong>Sebesség:</strong> {{ ram.speed }} MHz</p>
+        <p><strong>Típus:</strong> {{ ram.type }}</p>
+        <p><strong>Késleltetés:</strong> {{ ram.kesleltetes }}</p>
+        <p><strong>Hűtőborda:</strong> {{ boolLabel(ram.hutoborda) }}</p>
+        <p><strong>LED világítás:</strong> {{ boolLabel(ram.LED) }}</p>
+        <p><strong>Feszültség:</strong> {{ ram.voltage }} V</p>
+        <p><strong>Kiszerelés:</strong> {{ ram.package }}</p>
+      </ng-container>
     </div>
 
   </div>

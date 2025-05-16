@@ -11,6 +11,9 @@ import {MatButton} from '@angular/material/button';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
 import { CPU } from '../../../model/cpu';
 import { GPU } from '../../../model/gpu';
+import { RAM } from '../../../model/ram';
+import { MotherBoard } from '../../../model/motherboard';
+
 
 
 @Component({
@@ -33,15 +36,19 @@ import { GPU } from '../../../model/gpu';
 export class ComponentCompareComponent {
   cpuList: { name: string }[] = [];
   gpuList: { name: string }[] = [];
+  ramList: { name: string }[] = [];
+  motherBoardList: { name: string }[] = [];
 
+  ramDetails: RAM[] = [];
+  motherBoardDetails: MotherBoard[] = [];
   cpuDetails: CPU[] = [];
   gpuDetails: GPU[] = [];
 
-  selectedType: 'cpu' | 'gpu' | null = null;
+  selectedType: 'cpu' | 'gpu' | 'ram' | 'motherboard' | null = null;
   userMessage: string = '';
 
-  comparisonLeft: CPU | GPU | null = null;
-  comparisonRight: CPU | GPU | null = null;
+  comparisonLeft: CPU | GPU | RAM | MotherBoard | null = null;
+  comparisonRight: CPU | GPU | RAM | MotherBoard | null = null;
 
   searchQueryLeft = '';
   searchQueryRight = '';
@@ -72,24 +79,48 @@ export class ComponentCompareComponent {
     const gpuSnap = await getDocs(gpuQuery);
     this.gpuList = gpuSnap.docs.map(doc => ({ name: doc.data()['name'] }));
     this.gpuDetails = gpuSnap.docs.map(doc => doc.data() as GPU);
+
+    // RAM-ok lekérése
+    const ramQuery = query(productsRef, where('category', '==', 'RAM'));
+    const ramSnap = await getDocs(ramQuery);
+    this.ramList = ramSnap.docs.map(doc => ({ name: doc.data()['name'] }));
+    this.ramDetails = ramSnap.docs.map(doc => doc.data() as RAM);
+
+    // Alaplapok lekérése
+    const mbQuery = query(productsRef, where('category', '==', 'MotherBoard'));
+    const mbSnap = await getDocs(mbQuery);
+    this.motherBoardList = mbSnap.docs.map(doc => ({ name: doc.data()['name'] }));
+    this.motherBoardDetails = mbSnap.docs.map(doc => doc.data() as MotherBoard);
   }
 
 
   get filteredListLeft() {
-    const list = this.selectedType === 'cpu' ? this.cpuList : this.gpuList;
+    const list =
+      this.selectedType === 'cpu' ? this.cpuList :
+        this.selectedType === 'gpu' ? this.gpuList :
+          this.selectedType === 'ram' ? this.ramList :
+            this.selectedType === 'motherboard' ? this.motherBoardList :
+              [];
+
     return list.filter(item =>
       item.name.toLowerCase().includes(this.searchQueryLeft.toLowerCase())
     );
   }
 
   get filteredListRight() {
-    const list = this.selectedType === 'cpu' ? this.cpuList : this.gpuList;
+    const list =
+      this.selectedType === 'cpu' ? this.cpuList :
+        this.selectedType === 'gpu' ? this.gpuList :
+          this.selectedType === 'ram' ? this.ramList :
+            this.selectedType === 'motherboard' ? this.motherBoardList :
+              [];
+
     return list.filter(item =>
       item.name.toLowerCase().includes(this.searchQueryRight.toLowerCase())
     );
   }
 
-  selectType(type: 'cpu' | 'gpu') {
+  selectType(type: 'cpu' | 'gpu'| 'ram' | 'motherboard') {
     if (this.selectedType === type) {
       this.selectedType = null;
     } else {
@@ -122,8 +153,22 @@ export class ComponentCompareComponent {
       this.userMessage = 'Kérlek, válassz ki két alkatrészt az összehasonlításhoz.';
       return;
     }
+    let dataList: any[] = [];
 
-    const dataList = this.selectedType === 'cpu' ? this.cpuDetails : this.gpuDetails;
+    switch (this.selectedType) {
+      case 'cpu':
+        dataList = this.cpuDetails;
+        break;
+      case 'gpu':
+        dataList = this.gpuDetails;
+        break;
+      case 'ram':
+        dataList = this.ramDetails;
+        break;
+      case 'motherboard':
+        dataList = this.motherBoardDetails;
+        break;
+    }
 
     this.comparisonLeft = dataList.find(item => item.name === this.selectedLeft) || null;
     this.comparisonRight = dataList.find(item => item.name === this.selectedRight) || null;
@@ -149,19 +194,26 @@ export class ComponentCompareComponent {
   }
 
   mapToArray(map: Map<any, any> | Record<any, any>): { key: any, value: any }[] {
+    console.log(map)
     if (map instanceof Map) {
       return Array.from(map.entries()).map(([key, value]) => ({ key, value }));
     } else {
       // Ha sima objektum (pl. Firestore nem ment el Map-ként)
       return Object.entries(map).map(([key, value]) => ({ key, value }));
     }
+
   }
 
-  boolLabel(value: boolean | string): string {
+  boolLabel(value: boolean | string | null | undefined): string {
     if (value === true || value === 'true') return 'Igen';
-    if (value === false || value === 'false') return 'Nem';
+
+    // Ha falsy érték, vagy üres string: "Nem"
+    if (!value || value === 'false') return 'Nem';
+
     return String(value);
   }
+
+
 
   get leftCPU(): CPU | null {
     return this.selectedType === 'cpu' ? this.comparisonLeft as CPU : null;
@@ -178,6 +230,23 @@ export class ComponentCompareComponent {
   get rightGPU(): GPU | null {
     return this.selectedType === 'gpu' ? this.comparisonRight as GPU : null;
   }
+
+  get leftRAM(): RAM | null {
+    return this.selectedType === 'ram' ? this.comparisonLeft as RAM : null;
+  }
+
+  get rightRAM(): RAM | null {
+    return this.selectedType === 'ram' ? this.comparisonRight as RAM : null;
+  }
+
+  get leftMotherboard(): MotherBoard | null {
+    return this.selectedType === 'motherboard' ? this.comparisonLeft as MotherBoard : null;
+  }
+
+  get rightMotherboard(): MotherBoard | null {
+    return this.selectedType === 'motherboard' ? this.comparisonRight as MotherBoard : null;
+  }
+
 
 
 
