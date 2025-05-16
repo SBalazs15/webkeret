@@ -8,6 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import {MatButton} from '@angular/material/button';
+import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
+import { CPU } from '../../../model/cpu';
+import { GPU } from '../../../model/gpu';
+
 
 @Component({
   selector: 'app-component-compare',
@@ -27,25 +31,49 @@ import {MatButton} from '@angular/material/button';
   styleUrls: ['./component-compare.component.css']
 })
 export class ComponentCompareComponent {
+  cpuList: { name: string }[] = [];
+  gpuList: { name: string }[] = [];
+
+  cpuDetails: CPU[] = [];
+  gpuDetails: GPU[] = [];
+
   selectedType: 'cpu' | 'gpu' | null = null;
+  userMessage: string = '';
+
+  comparisonLeft: CPU | GPU | null = null;
+  comparisonRight: CPU | GPU | null = null;
 
   searchQueryLeft = '';
   searchQueryRight = '';
 
   selectedLeft: string  = '';
   selectedRight: string = '';
+  isComparing = false;
 
-  cpuList = [
-    { name: 'Intel Core i5-12400F' },
-    { name: 'AMD Ryzen 5 5600X' },
-    { name: 'Intel Core i7-12700K' }
-  ];
 
-  gpuList = [
-    { name: 'NVIDIA RTX 3060' },
-    { name: 'AMD Radeon RX 6700 XT' },
-    { name: 'NVIDIA RTX 4070' }
-  ];
+  constructor(private firestore: Firestore,) {
+  }
+
+  ngOnInit() {
+    this.loadProducts();
+  }
+
+  async loadProducts() {
+    const productsRef = collection(this.firestore, 'Products');
+
+    // CPU-k lekérése
+    const cpuQuery = query(productsRef, where('category', '==', 'CPU'));
+    const cpuSnap = await getDocs(cpuQuery);
+    this.cpuList = cpuSnap.docs.map(doc => ({ name: doc.data()['name'] }));
+    this.cpuDetails = cpuSnap.docs.map(doc => doc.data() as CPU);
+
+    // GPU-k lekérése
+    const gpuQuery = query(productsRef, where('category', '==', 'GPU'));
+    const gpuSnap = await getDocs(gpuQuery);
+    this.gpuList = gpuSnap.docs.map(doc => ({ name: doc.data()['name'] }));
+    this.gpuDetails = gpuSnap.docs.map(doc => doc.data() as GPU);
+  }
+
 
   get filteredListLeft() {
     const list = this.selectedType === 'cpu' ? this.cpuList : this.gpuList;
@@ -83,29 +111,15 @@ export class ComponentCompareComponent {
     this.searchQueryRight = this.selectedRight;
   }
 
-  comparisonLeft: any = null;
-  comparisonRight: any = null;
-
 // Segítség a kulcsok lekéréséhez HTML-ben
   objectKeys = Object.keys;
 
-// Példaadatok, amiket „lekérdezünk”
-  cpuDetails = [
-    { name: 'Intel Core i5-12400F', cores: 6, threads: 12, baseClock: '2.5GHz' },
-    { name: 'AMD Ryzen 5 5600X', cores: 6, threads: 12, baseClock: '3.7GHz' },
-    { name: 'Intel Core i7-12700K', cores: 12, threads: 20, baseClock: '3.6GHz' }
-  ];
-
-  gpuDetails = [
-    { name: 'NVIDIA RTX 3060', memory: '12GB', tdp: '170W', baseClock: '1.32GHz' },
-    { name: 'AMD Radeon RX 6700 XT', memory: '12GB', tdp: '230W', baseClock: '2.32GHz' },
-    { name: 'NVIDIA RTX 4070', memory: '12GB', tdp: '200W', baseClock: '1.92GHz' }
-  ];
 
   compareItems() {
     if (!this.selectedLeft || !this.selectedRight) {
       this.comparisonLeft = null;
       this.comparisonRight = null;
+      this.userMessage = 'Kérlek, válassz ki két alkatrészt az összehasonlításhoz.';
       return;
     }
 
@@ -113,6 +127,58 @@ export class ComponentCompareComponent {
 
     this.comparisonLeft = dataList.find(item => item.name === this.selectedLeft) || null;
     this.comparisonRight = dataList.find(item => item.name === this.selectedRight) || null;
+
+    this.userMessage = ''; // siker esetén töröljük az üzenetet
+    this.isComparing = true;
   }
+
+  resetSelection(side: 'left' | 'right') {
+    if (side === 'left') {
+      this.selectedLeft = '';
+      this.searchQueryLeft = '';
+      this.comparisonLeft = null;
+    } else {
+      this.selectedRight = '';
+      this.searchQueryRight = '';
+      this.comparisonRight = null;
+    }
+
+    if (!this.selectedLeft || !this.selectedRight) {
+      this.isComparing = false;
+    }
+  }
+
+  mapToArray(map: Map<any, any> | Record<any, any>): { key: any, value: any }[] {
+    if (map instanceof Map) {
+      return Array.from(map.entries()).map(([key, value]) => ({ key, value }));
+    } else {
+      // Ha sima objektum (pl. Firestore nem ment el Map-ként)
+      return Object.entries(map).map(([key, value]) => ({ key, value }));
+    }
+  }
+
+  boolLabel(value: boolean | string): string {
+    if (value === true || value === 'true') return 'Igen';
+    if (value === false || value === 'false') return 'Nem';
+    return String(value);
+  }
+
+  get leftCPU(): CPU | null {
+    return this.selectedType === 'cpu' ? this.comparisonLeft as CPU : null;
+  }
+
+  get rightCPU(): CPU | null {
+    return this.selectedType === 'cpu' ? this.comparisonRight as CPU : null;
+  }
+
+  get leftGPU(): GPU | null {
+    return this.selectedType === 'gpu' ? this.comparisonLeft as GPU : null;
+  }
+
+  get rightGPU(): GPU | null {
+    return this.selectedType === 'gpu' ? this.comparisonRight as GPU : null;
+  }
+
+
 
 }

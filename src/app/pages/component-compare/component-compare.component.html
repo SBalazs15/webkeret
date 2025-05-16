@@ -1,63 +1,220 @@
 <div class="compare-container">
-  <h2>Alkatrészek összehasonlítása</h2>
 
-  <div class="checkboxes">
-    <mat-checkbox [checked]="selectedType === 'cpu'" (change)="selectType('cpu')">
-      Processzorok
-    </mat-checkbox>
-    <mat-checkbox [checked]="selectedType === 'gpu'" (change)="selectType('gpu')">
-      Videókártyák
-    </mat-checkbox>
-  </div>
+  <div id="kulso">
+    <h2>Alkatrészek összehasonlítása</h2>
 
-  <div *ngIf="selectedType" class="search-section">
-    <!-- BAL KERESŐ -->
-    <div id="bal">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Keresés név alapján...</mat-label>
-        <input matInput [(ngModel)]="searchQueryLeft" [matAutocomplete]="autoLeft" />
-        <mat-autocomplete #autoLeft="matAutocomplete" (optionSelected)="onSelectLeft($event)">
-          <mat-option *ngFor="let item of filteredListLeft" [value]="item.name">
-            {{ item.name }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
+    <div class="checkboxes">
+      <mat-checkbox [checked]="selectedType === 'cpu'" (change)="selectType('cpu')" [disabled]="isComparing && (selectedLeft || selectedRight)">
+        Processzorok
+      </mat-checkbox>
+      <mat-checkbox [checked]="selectedType === 'gpu'" (change)="selectType('gpu')" [disabled]="isComparing && (selectedLeft || selectedRight)">
+        Videókártyák
+      </mat-checkbox>
     </div>
 
-    <!-- JOBB KERESŐ -->
-    <div id="jobb">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Keresés név alapján...</mat-label>
-        <input matInput [(ngModel)]="searchQueryRight" [matAutocomplete]="autoRight" />
-        <mat-autocomplete #autoRight="matAutocomplete" (optionSelected)="onSelectRight($event)">
-          <mat-option *ngFor="let item of filteredListRight" [value]="item.name">
-            {{ item.name }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
+    <div *ngIf="selectedType" class="search-section">
+      <!-- BAL KERESŐ -->
+      <div id="bal">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Keresés név alapján...</mat-label>
+          <input matInput [(ngModel)]="searchQueryLeft" [matAutocomplete]="autoLeft" />
+          <mat-autocomplete #autoLeft="matAutocomplete" (optionSelected)="onSelectLeft($event)">
+            <mat-option *ngFor="let item of filteredListLeft" [value]="item.name">
+              {{ item.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <button class="torlesGomb" mat-button color="warn" (click)="resetSelection('left')" *ngIf="selectedLeft">Törlés</button>
+      </div>
+
+      <!-- JOBB KERESŐ -->
+      <div id="jobb">
+        <button class="torlesGomb" mat-button color="warn" (click)="resetSelection('right')" *ngIf="selectedRight">Törlés</button>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Keresés név alapján...</mat-label>
+          <input matInput [(ngModel)]="searchQueryRight" [matAutocomplete]="autoRight" />
+          <mat-autocomplete #autoRight="matAutocomplete" (optionSelected)="onSelectRight($event)">
+            <mat-option *ngFor="let item of filteredListRight" [value]="item.name">
+              {{ item.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+      </div>
+      <!--Gomb ide középre igazítva-->
     </div>
-    <!--Gomb ide középre igazítva-->
-  </div>
-  <!-- Gomb ide középre igazítva -->
-  <div style="width: 100%; text-align: center; margin-top: 20px;">
-    <button mat-raised-button color="primary" (click)="compareItems()">Összehasonlítás</button>
+
+    <div *ngIf="userMessage" style="text-align: center; color: red; margin-top: 10px;">
+      {{ userMessage }}
+    </div>
+
+    <div style="width: 100%; text-align: center; margin-top: 20px;">
+      <button mat-raised-button color="primary" (click)="compareItems()">Összehasonlítás</button>
+    </div>
   </div>
 
   <!-- Összehasonlítási eredmények -->
   <div *ngIf="comparisonLeft && comparisonRight" class="comparison-result" style="margin-top: 30px; display: flex; justify-content: space-between;">
+
+    <!-- BAL OLDAL -->
     <div style="width: 45%; border: 1px solid #ccc; padding: 10px;">
       <h3>{{ comparisonLeft.name }}</h3>
-      <p *ngFor="let key of objectKeys(comparisonLeft)">
-        <strong>{{ key }}:</strong> {{ comparisonLeft[key] }}
-      </p>
+
+      <!-- CPU rész -->
+      <ng-container *ngIf="leftCPU as cpu">
+        <p><strong>Cores:</strong> {{ cpu.cores }}</p>
+        <p><strong>Threads:</strong> {{ cpu.thread }}</p>
+        <p><strong>TDP:</strong> {{ cpu.TDP }} W</p>
+        <p><strong>Socket:</strong> {{ cpu.socket }}</p>
+        <p><strong>Clock Speed:</strong> {{ cpu.clockSpeed }} GHz</p>
+        <p><strong>Turbo Clock Speed:</strong> {{ cpu.turboClockSpeed }} GHz</p>
+        <p><strong>Integrated GPU:</strong> {{ cpu.integratedGPU }}</p>
+        <div>
+          <strong>Cache:</strong>
+          <div *ngFor="let c of mapToArray(cpu.cache)" style="margin-left: 10px;">
+            {{ c.key }}: {{ c.value }} KB
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- GPU rész -->
+      <ng-container *ngIf="leftGPU as gpu">
+        <p><strong>Chip Speed:</strong> {{ gpu.chipSpeed }} GHz</p>
+        <p><strong>Memory Speed:</strong> {{ gpu.chipMemoriSpeed }} GHz</p>
+        <p><strong>Recommended TDP:</strong> {{ gpu.recomendedTdp }} W</p>
+        <p><strong>Chipset:</strong> {{ gpu.chipset }}</p>
+        <p><strong>Chipset Family:</strong> {{ gpu.chipsetfamily }}</p>
+        <p><strong>Cooling:</strong> {{ gpu.cooling }}</p>
+        <p><strong>Vent Count:</strong> {{ gpu.ventcount }}</p>
+        <p><strong>Memory Amount:</strong> {{ gpu.memoriAmount }} GB</p>
+        <p><strong>Memory Type:</strong> {{ gpu.memoryType }}</p>
+        <p><strong>Memory Bandwidth:</strong> {{ gpu.memorySavszelesseg }} GB/s</p>
+        <p><strong>Max Resolution:</strong> {{ gpu.maxFelbontas }}</p>
+        <p><strong>DirectX:</strong> {{ gpu.DirectX }}</p>
+        <p><strong>Power Connector:</strong> {{ gpu.TapCsatlakozo }}</p>
+        <p><strong>LED:</strong> {{ boolLabel(gpu.LED) }}</p>
+        <p><strong>Color:</strong> {{ gpu.color }}</p>
+        <p><strong>Used Technologies:</strong> {{ gpu.usedTech.join(', ') }}</p>
+
+        <div><strong>DLSS Versions:</strong>
+          <ul>
+            <li *ngFor="let d of gpu.DLSS">{{ d }}</li>
+          </ul>
+        </div>
+
+        <div><strong>Connections:</strong>
+          <p>VGA:
+            <span *ngFor="let item of mapToArray(gpu.VGA)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>DVI:
+            <span *ngFor="let item of mapToArray(gpu.DVI)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>HDMI:
+            <span *ngFor="let item of mapToArray(gpu.HDMI)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>DisplayPort:
+            <span *ngFor="let item of mapToArray(gpu.Display)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>Type-C:
+            <span *ngFor="let item of mapToArray(gpu.Type_C)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+        </div>
+
+        <p><strong>Dimensions:</strong> {{ gpu.szelesseg }} x {{ gpu.hosszusag }} x {{ gpu.vastagsag }} mm</p>
+      </ng-container>
+
     </div>
 
+    <!-- JOBB OLDAL -->
     <div style="width: 45%; border: 1px solid #ccc; padding: 10px;">
       <h3>{{ comparisonRight.name }}</h3>
-      <p *ngFor="let key of objectKeys(comparisonRight)">
-        <strong>{{ key }}:</strong> {{ comparisonRight[key] }}
-      </p>
+
+      <!-- CPU rész -->
+      <ng-container *ngIf="rightCPU as cpu">
+        <p><strong>Cores:</strong> {{ cpu.cores }}</p>
+        <p><strong>Threads:</strong> {{ cpu.thread }}</p>
+        <p><strong>TDP:</strong> {{ cpu.TDP }} W</p>
+        <p><strong>Socket:</strong> {{ cpu.socket }}</p>
+        <p><strong>Clock Speed:</strong> {{ cpu.clockSpeed }} GHz</p>
+        <p><strong>Turbo Clock Speed:</strong> {{ cpu.turboClockSpeed }} GHz</p>
+        <p><strong>Integrated GPU:</strong> {{ cpu.integratedGPU }}</p>
+        <div>
+          <strong>Cache:</strong>
+          <div *ngFor="let c of mapToArray(cpu.cache)" style="margin-left: 10px;">
+            {{ c.key }}: {{ c.value }} KB
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- GPU rész -->
+      <ng-container *ngIf="rightGPU as gpu">
+        <p><strong>Chip Speed:</strong> {{ gpu.chipSpeed }} GHz</p>
+        <p><strong>Memory Speed:</strong> {{ gpu.chipMemoriSpeed }} GHz</p>
+        <p><strong>Recommended TDP:</strong> {{ gpu.recomendedTdp }} W</p>
+        <p><strong>Chipset:</strong> {{ gpu.chipset }}</p>
+        <p><strong>Chipset Family:</strong> {{ gpu.chipsetfamily }}</p>
+        <p><strong>Cooling:</strong> {{ gpu.cooling }}</p>
+        <p><strong>Vent Count:</strong> {{ gpu.ventcount }}</p>
+        <p><strong>Memory Amount:</strong> {{ gpu.memoriAmount }} GB</p>
+        <p><strong>Memory Type:</strong> {{ gpu.memoryType }}</p>
+        <p><strong>Memory Bandwidth:</strong> {{ gpu.memorySavszelesseg }} GB/s</p>
+        <p><strong>Max Resolution:</strong> {{ gpu.maxFelbontas }}</p>
+        <p><strong>DirectX:</strong> {{ gpu.DirectX }}</p>
+        <p><strong>Power Connector:</strong> {{ gpu.TapCsatlakozo }}</p>
+        <p><strong>LED:</strong> {{ boolLabel(gpu.LED) }}</p>
+        <p><strong>Color:</strong> {{ gpu.color }}</p>
+        <p><strong>Used Technologies:</strong> {{ gpu.usedTech.join(', ') }}</p>
+
+        <div><strong>DLSS Versions:</strong>
+          <ul>
+            <li *ngFor="let d of gpu.DLSS">{{ d }}</li>
+          </ul>
+        </div>
+
+        <div><strong>Connections:</strong>
+          <p>VGA:
+            <span *ngFor="let item of mapToArray(gpu.VGA)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>DVI:
+            <span *ngFor="let item of mapToArray(gpu.DVI)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>HDMI:
+            <span *ngFor="let item of mapToArray(gpu.HDMI)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>DisplayPort:
+            <span *ngFor="let item of mapToArray(gpu.Display)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+          <p>Type-C:
+            <span *ngFor="let item of mapToArray(gpu.Type_C)">
+            {{ boolLabel(item.key) }}: {{ item.value }}
+          </span>
+          </p>
+        </div>
+
+        <p><strong>Dimensions:</strong> {{ gpu.szelesseg }} x {{ gpu.hosszusag }} x {{ gpu.vastagsag }} mm</p>
+      </ng-container>
+
     </div>
+
   </div>
+
 
 </div>

@@ -1,5 +1,5 @@
 .compare-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   position: relative;
@@ -48,8 +48,18 @@ h2{
 }
 
 #bal{
-  width: 350px;
+  display: flex;
+  width: 400px;
 }
 #jobb{
-  width: 350px;
+  display: flex;
+  width: 400px;
+}
+#kulso{
+  width: 900px;
+  justify-self: center;
+}
+.torlesGomb{
+  justify-self: center;
+  align-self: center;
 }
