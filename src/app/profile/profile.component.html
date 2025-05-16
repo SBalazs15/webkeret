@@ -1,6 +1,14 @@
 <mat-card class="profile-card">
   <mat-card-title>Profilom</mat-card-title>
 
+  <div *ngIf="successMessage" style="color: green; margin-bottom: 10px;">
+    {{ successMessage }}
+  </div>
+
+  <mat-error *ngIf="errorMessage" class="error-message" style="margin: 0 16px 16px;">
+    {{ errorMessage }}
+  </mat-error>
+
   <form [formGroup]="profileForm" class="form-fields">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Felhasználónév</mat-label>
@@ -19,7 +27,7 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Születési dátum</mat-label>
-      <input matInput type="date" formControlName="dob" />
+      <input matInput formControlName="dob" />
     </mat-form-field>
 
     <ng-container *ngIf="editMode">

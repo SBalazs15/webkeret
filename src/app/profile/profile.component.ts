@@ -1,40 +1,86 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { AuthService } from '../services/auth.service';
+import { Firestore, doc, getDoc, deleteDoc, updateDoc } from '@angular/fire/firestore'; // Importáljuk a deleteDoc metódust
+import { Auth } from '@angular/fire/auth'; // Az Auth modul importálása
+import { Observable, from } from 'rxjs';
+import { User } from '../../model/user';
+import {MatFormField, MatInput} from '@angular/material/input';
 import {MatCard, MatCardActions, MatCardTitle} from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import {NgIf} from '@angular/common';
 import {MatButton} from '@angular/material/button';
+import {NgIf} from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { updateEmail,updatePassword } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
+  standalone: true,
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   imports: [
+    MatFormField,
     MatCard,
     MatCardTitle,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    NgIf,
+    MatInput,
     MatCardActions,
-    MatButton
+    MatButton,
+    NgIf,
+    MatFormFieldModule,
   ],
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   editMode = false;
+  currentUser: Observable<User | null> | undefined; // Bejelentkezett felhasználó adatainak lekérése
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private firestore: Firestore,
+    private authService: AuthService,
+    private auth: Auth, // Az Auth szerviz hozzáadása
+    private router: Router
+  ) {
     this.profileForm = this.fb.group({
-      username: [{ value: 'janedoe', disabled: true }, Validators.required],
-      name: [{ value: 'Jane Doe', disabled: true }, Validators.required],
-      email: [{ value: 'jane@example.com', disabled: true }, [Validators.required, Validators.email]],
-      dob: [{ value: '1995-04-10', disabled: true }],
+      username: [{ value: '', disabled: true }, Validators.required],
+      name: [{ value: '', disabled: true }, Validators.required],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      dob: [{ value: '', disabled: true }],
       password: [''],
       confirmPassword: ['']
     });
   }
+
+  ngOnInit(): void {
+    const currentFirebaseUser = this.auth.currentUser;
+
+    if (currentFirebaseUser) {
+      const userRef = doc(this.firestore, `Users/${currentFirebaseUser.uid}`);
+      getDoc(userRef).then(docSnapshot => {
+        if (docSnapshot.exists()) {
+          const userData = docSnapshot.data() as User;
+          console.log(currentFirebaseUser.email)
+
+          this.profileForm.patchValue({
+            username: userData.uname,
+            name: userData.name,
+            email: userData.email,
+            dob: userData.bday
+          });
+        } else {
+          console.log('Felhasználó nem található a Firestore-ban');
+        }
+      }).catch(error => {
+        console.error('Hiba az adatok lekérésekor:', error);
+      });
+    } else {
+      console.error('Nincs bejelentkezett felhasználó');
+    }
+  }
+
 
   enableEditing() {
     this.editMode = true;
@@ -46,37 +92,111 @@ export class ProfileComponent {
   }
 
   saveChanges() {
-    if (this.profileForm.valid) {
-      console.log('Mentett adatok:', this.profileForm.value);
-      this.editMode = false;
-      this.profileForm.get('name')?.disable();
-      this.profileForm.get('email')?.disable();
-      this.profileForm.get('username')?.disable();
-      this.profileForm.get('password')?.reset();
-      this.profileForm.get('confirmPassword')?.reset();
+    if (!this.profileForm.valid) return;
+
+    this.errorMessage = null;
+    this.successMessage = null;
+
+    const currentFirebaseUser = this.auth.currentUser;
+
+    if (currentFirebaseUser) {
+      const updatedEmail = this.profileForm.get('email')?.value;
+      const newPassword = this.profileForm.get('password')?.value;
+      const confirmPassword = this.profileForm.get('confirmPassword')?.value;
+
+      if (newPassword && newPassword !== confirmPassword) {
+        this.errorMessage = 'A két jelszó nem egyezik meg.';
+        return;
+      }
+
+      const updatedData = {
+        name: this.profileForm.get('name')?.value,
+        uname: this.profileForm.get('username')?.value,
+        email: updatedEmail
+      };
+
+      const userRef = doc(this.firestore, `Users/${currentFirebaseUser.uid}`);
+
+      updateDoc(userRef, updatedData)
+        .then(() => {
+          const promises = [];
+
+          if (updatedEmail !== currentFirebaseUser.email) {
+            promises.push(updateEmail(currentFirebaseUser, updatedEmail));
+          }
+
+          if (newPassword) {
+            promises.push(updatePassword(currentFirebaseUser, newPassword));
+          }
+
+          return Promise.all(promises);
+        })
+        .then(() => {
+          this.successMessage = 'A profil sikeresen frissült.';
+          this.editMode = false;
+          this.profileForm.disable();
+          this.profileForm.patchValue({ password: '', confirmPassword: '' });
+        })
+        .catch(error => {
+          console.error('Hiba a mentés során:', error);
+          this.errorMessage = this.getErrorMessage(error);
+        });
     }
   }
 
-  deleteProfile() {
-    // ide jöhet majd megerősítés (confirm dialog)
-    console.log('Profil törölve!');
+  getErrorMessage(error: any): string {
+    // Példa hibakezelés, tovább bővíthető:
+    if (error.code === 'auth/requires-recent-login') {
+      return 'Biztonsági okokból kérjük, jelentkezz be újra a módosításhoz.';
+    }
+    if (error.code === 'auth/operation-not-allowed') {
+      return 'Az adott művelet nem engedélyezett.';
+    }
+    if (error.code === 'auth/email-already-in-use') {
+      return 'Ez az email cím már használatban van.';
+    }
+    return 'Ismeretlen hiba történt.';
   }
+
+
+
+
+  deleteProfile() {
+    const currentFirebaseUser = this.auth.currentUser;
+
+    if (currentFirebaseUser) {
+      const userRef = doc(this.firestore, `Users/${currentFirebaseUser.uid}`);
+
+      // 1. Először töröljük a Firestore-ból
+      deleteDoc(userRef)
+        .then(() => {
+          // 2. Majd töröljük az Authentication fiókot is
+          return currentFirebaseUser.delete();
+        })
+        .then(() => {
+          this.errorMessage = 'Felhasználó sikeresen törölve.';
+
+          // 3. Várjunk 2 másodpercet, majd kijelentkezés (auth service használatával)
+          setTimeout(() => {
+            this.authService.singOut();
+          }, 2000);
+        })
+        .catch(error => {
+          console.error('Hiba a törlés során:', error);
+          this.errorMessage = 'Hiba történt a profil vagy fiók törlése során.';
+        });
+    } else {
+      this.errorMessage = 'Nincs bejelentkezett felhasználó.';
+    }
+  }
+
+
+
 
   cancelEdit() {
     this.editMode = false;
 
-    this.profileForm.reset({
-      username: { value: 'janedoe', disabled: true },
-      name: { value: 'Jane Doe', disabled: true },
-      email: { value: 'jane@example.com', disabled: true },
-      dob: { value: '1995-04-10', disabled: true },
-      password: '',
-      confirmPassword: ''
-    });
-
-    this.profileForm.get('password')?.clearValidators();
-    this.profileForm.get('confirmPassword')?.clearValidators();
-    this.profileForm.get('password')?.updateValueAndValidity();
-    this.profileForm.get('confirmPassword')?.updateValueAndValidity();
+    // Visszaállítjuk az alapadatokat a Firestore-ból történő betöltés után
+    this.ngOnInit(); // Újra betöltjük a felhasználói adatokat
   }
 }

@@ -1,8 +1,8 @@
 export interface User {
   id: string,
   name: string,
-  username: string,
-  birthDate: string,
+  uname: string,
+  bday: string,
   email: string,
   pw: string,
   admin: string

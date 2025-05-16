@@ -25,7 +25,7 @@ import {User} from '../../model/user';
 export class AuthService {
   currentUser: Observable<FirebaseUser | null>;
 
-  constructor(private auth: Auth, private firestore: Firestore, private router: Router) {
+    constructor(private auth: Auth, private firestore: Firestore, private router: Router) {
     this.currentUser = authState(this.auth)
   }
 

@@ -59,10 +59,10 @@ export class RegisterComponent {
       const formValue = this.registerForm.value;
 
       const userData: Partial<User> = {
-        username: formValue.username,
+        uname: formValue.username,
         email: formValue.email,
         name: formValue.name,
-        birthDate: formValue.dob ? formValue.dob.toISOString().split('T')[0] : null,
+        bday: formValue.dob ? formValue.dob.toISOString().split('T')[0] : null,
         admin: '0',
       }
 
