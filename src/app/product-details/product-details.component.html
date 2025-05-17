@@ -1,17 +1,19 @@
 <div class="product-details-container">
-  <div class="product-image">
-    <img [src]="selectedProduct?.image" alt="product image" />
+  <div id="felso">
+    <div class="product-image">
+      <img [src]="selectedProduct?.image" alt="product image" />
+    </div>
+    <div class="product-info">
+      <mat-card class="mat-elevation-z4" >
+        <mat-card-title>{{ selectedProduct?.name }}</mat-card-title>
+        <mat-card-content>
+          <p class="description">{{ selectedProduct?.description }}</p>
+          <p><strong>Ár:</strong> {{ selectedProduct?.price | price }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
-  <div class="product-info">
-    <mat-card class="mat-elevation-z4" style="padding: 16px; margin-bottom: 16px;">
-      <mat-card-title>{{ selectedProduct?.name }}</mat-card-title>
-      <mat-card-content>
-        <p class="description">{{ selectedProduct?.description }}</p>
-        <p><strong>Ár:</strong> {{ selectedProduct?.price | price }}</p>
-      </mat-card-content>
-    </mat-card>
-
-
+  <div id="also">
 
     <div *ngIf="selectedProduct?.category === 'Case'">
       <mat-card class="mat-elevation-z4">

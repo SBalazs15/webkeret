@@ -2,18 +2,26 @@
   display: flex;
   gap: 20px;
   padding: 20px;
+  flex-direction: column;
 }
 
-.product-image img {
+.product-image {
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 40%;
+  max-width: 400px;
+}
+img{
   width: 100%;
   max-width: 400px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .product-info {
   flex: 1;
-  max-width: 600px;
+  max-width: 800px;
+  margin-bottom: 0;
 }
 
 .product-info h2 {
@@ -81,4 +89,7 @@ mat-card {
 .description {
   margin-top: 8px;
 }
-
+#felso{
+  display: flex;
+  flex-direction: row;
+}

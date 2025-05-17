@@ -12,14 +12,14 @@
 }
 
 .product-grid {
-  width: 50%;
+  width: 45%;
   padding: 1rem;
   overflow-y: auto;
   box-sizing: border-box;
 }
 
 .product-details {
-  width: 40%;
+  width: 45%;
   padding: 1rem;
   overflow-y: auto;
   background-color: #fafafa;
