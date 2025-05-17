@@ -24,6 +24,7 @@
     @Input() maxMemory!: number;
     @Input() memoryType!: string;
     @Input() socket!: string;
+    @Input() power!: number;
 
     constructor(private firestore: Firestore) {}
 
@@ -78,9 +79,16 @@
 
             if (category === 'GPU' && this.caseSzelesseg&&this.caseMelyseg) {
               filtered = filtered.filter(product =>
-                this.caseMelyseg!=null && this.caseSzelesseg!=null && product.szelesseg<=this.caseMelyseg && product.hosszusag<=this.caseSzelesseg
+                this.caseMelyseg!=null && this.caseSzelesseg!=null && product.szelesseg<=this.caseSzelesseg && product.hosszusag<=this.caseMelyseg
               );
             }
+
+            if (category === 'PSU' && this.memoryType&&this.maxMemory) {
+              filtered = filtered.filter(product =>
+                product.power>=this.power
+              );
+            }
+
             return filtered;
           })
         )

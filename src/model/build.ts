@@ -7,6 +7,8 @@ import {GPU} from './gpu';
 import {PSU} from './psu';
 
 export interface Build{
+  id: number;
+  buildName: string;
   puBlic: boolean;
   uid: string;
   case: Case,

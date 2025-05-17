@@ -12,7 +12,10 @@
 }
 
 p{
+  display: flex;
   font-size: xx-large;
   font-family: monospace;
   font-weight: bold;
+  align-self: center;
+  justify-self: center;
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Build } from '../../model/build';
-import { Firestore, collection, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, query, where, orderBy, limit, doc, setDoc } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
 import {CategorySidebarComponent} from '../category-sidebar/category-sidebar.component';
 import {ProductGridComponent} from '../product-grid/product-grid.component';
@@ -50,6 +50,9 @@ export class BuildComponent {
   }
   get socket():string{
     return <string>this.buildModel.motherboard?.socket;
+  }
+  get power():number{
+    return <number>this.buildModel.gpu?.recomendedTdp;
   }
 
 
@@ -136,15 +139,41 @@ export class BuildComponent {
     }
 
     this.buildModel.uid = user.uid;
-    this.buildModel.puBlic=false;
+    this.buildModel.puBlic = false;
+    this.buildModel.buildName = '';
 
     try {
       const buildsCollection = collection(this.firestore, 'Builds');
-      await addDoc(buildsCollection, this.buildModel);
+
+      // 1. Lekérjük a legnagyobb id-jú buildet a felhasználóhoz
+      const q = query(
+        buildsCollection,
+        where('uid', '==', user.uid),
+        orderBy('id', 'desc'), // legnagyobb ID előre
+        limit(1)
+      );
+      const querySnapshot = await getDocs(q);
+
+      let newId = 1;
+      if (!querySnapshot.empty) {
+        const lastBuild = querySnapshot.docs[0].data() as Build;
+        // lastBuild.id szám, így csak növeljük
+        newId = lastBuild.id + 1;
+      }
+
+      this.buildModel.id = newId;
+
+      // 2. Új dokumentum létrehozása az új id-vel mint dokumentum ID
+      // Dokumentum ID string kell, ezért toString()
+      const newDocRef = doc(buildsCollection, newId.toString());
+      await setDoc(newDocRef, this.buildModel);
+
       alert('A build sikeresen mentve!');
     } catch (err) {
       console.error('Mentési hiba:', err);
       alert('Hiba történt a mentés során.');
     }
   }
+
+
 }

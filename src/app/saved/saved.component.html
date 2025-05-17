@@ -1,6 +1,57 @@
 <div id="kulso">
+
   <div id="doboz">
-    <p>Fejlesztés alatt</p>
-    <img src="/kepek/development.png">
+    <p>Buildjeid</p>
+    <ng-container *ngIf="builds$ | async as builds">
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let build of builds">
+          <mat-expansion-panel-header>
+            <mat-panel-title *ngIf="build.buildName==''">
+              Névtelen Build
+            </mat-panel-title>
+            <mat-panel-title *ngIf="build.buildName!=''">
+              {{build.buildName}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-list>
+            <mat-list-item><strong>CPU:</strong> {{ build.cpu.name }}</mat-list-item>
+            <mat-list-item><strong>Motherboard:</strong> {{ build.motherboard.name }}</mat-list-item>
+            <mat-list-item><strong>Case:</strong> {{ build.case.name }}</mat-list-item>
+
+            <mat-list-item *ngIf="build.cooler"><strong>Cooler:</strong> {{ build.cooler.name }}</mat-list-item>
+            <mat-list-item><strong>RAM:</strong> {{ build.ram.name }}</mat-list-item>
+            <mat-list-item *ngIf="build.gpu"><strong>GPU:</strong> {{ build.gpu.name }}</mat-list-item>
+            <mat-list-item><strong>PSU:</strong> {{ build.psu.name }}</mat-list-item>
+          </mat-list>
+          <!-- Gomb csak ha nincs buildName és még nem szerkesztünk -->
+          <button *ngIf="build.buildName === '' && editingBuildId !== build.id" mat-raised-button color="primary" (click)="startEditing(build.id)">
+            Nevezd el
+          </button>
+          <button *ngIf="build.buildName !== '' && editingBuildId !== build.id" mat-raised-button color="primary" (click)="startEditing(build.id)">
+            Másik név
+          </button>
+
+          <!-- Ha szerkesztünk ezen a builden, akkor input + gombok -->
+          <div *ngIf="editingBuildId === build.id" style="margin-top: 10px;">
+            <mat-form-field appearance="fill">
+              <mat-label>Build neve</mat-label>
+              <input matInput [(ngModel)]="newBuildName" />
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" (click)="saveBuildName(build.id)" [disabled]="!newBuildName.trim()">
+              Mentés
+            </button>
+
+            <button mat-button (click)="cancelEditing()">Mégse</button>
+          </div>
+          <button mat-raised-button color="accent" (click)="togglePublic(build)" style="float: right">
+            {{ build.puBlic ? 'Ne legyen publikus' : 'Legyen publikus' }}
+          </button>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
   </div>
 </div>
+
+
