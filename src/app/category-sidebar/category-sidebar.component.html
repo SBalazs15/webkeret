@@ -3,9 +3,17 @@
   <div id="text">PC Builder</div>
   <button
     *ngFor="let category of categories"
-    (click)="selectCategory(category)"
-    class="category-btn">
+    class="category-btn"
+    (click)="selectCategory(category)">
     {{ category | uppercase }}
+  </button>
+
+  <button mat-raised-button color="primary" (click)="next()" [disabled]="currentIndex >= categories.length - 1">
+    Next
+  </button>
+
+  <button mat-raised-button color="primary" (click)="onSave()">
+    Build mentése
   </button>
 </div>
 

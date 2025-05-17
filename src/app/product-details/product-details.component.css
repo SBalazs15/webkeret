@@ -39,3 +39,46 @@
 .product-info strong {
   font-weight: bold;
 }
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.detail-item {
+  padding: 4px 0;
+}
+
+.ports-section {
+  margin-top: 20px;
+}
+mat-card {
+  padding: 24px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.detail-item {
+  padding: 4px 0;
+}
+
+.ports-section {
+  margin-top: 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.description {
+  margin-top: 8px;
+}
+

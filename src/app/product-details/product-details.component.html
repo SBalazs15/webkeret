@@ -3,13 +3,274 @@
     <img [src]="selectedProduct?.image" alt="product image" />
   </div>
   <div class="product-info">
-    <h2>{{ selectedProduct?.name }}</h2>
-    <p>{{ selectedProduct?.description }}</p>
-    <p><strong>Ár:</strong> {{ selectedProduct?.price | price }}</p>
+    <mat-card class="mat-elevation-z4" style="padding: 16px; margin-bottom: 16px;">
+      <mat-card-title>{{ selectedProduct?.name }}</mat-card-title>
+      <mat-card-content>
+        <p class="description">{{ selectedProduct?.description }}</p>
+        <p><strong>Ár:</strong> {{ selectedProduct?.price | price }}</p>
+      </mat-card-content>
+    </mat-card>
 
-    <div *ngIf="selectedProduct">
-      <h3>Termékleírás:</h3>
-      <p>{{ getDetails() }}</p>
+
+
+    <div *ngIf="selectedProduct?.category === 'Case'">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-title>Specifikációk</mat-card-title>
+        <mat-divider></mat-divider>
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <strong>Méretek:</strong> {{ selectedProduct.szelesseg }} x {{ selectedProduct.magassag }} x {{ selectedProduct.melyeg }} mm
+          </div>
+          <div class="detail-item">
+            <strong>Súly:</strong> {{ selectedProduct.suly }} kg
+          </div>
+          <div class="detail-item">
+            <strong>Ventilátorok száma:</strong> {{ selectedProduct.ventCount }}
+          </div>
+          <div class="detail-item">
+            <strong>Ventilátor méretek:</strong> {{ selectedProduct.ventSizes?.join(', ') }} mm
+          </div>
+          <div class="detail-item">
+            <strong>Alaplap támogatás:</strong> {{ selectedProduct.motherBoardSizes?.join(', ') }}
+          </div>
+          <div class="detail-item">
+            <strong>USB portok száma:</strong> {{ selectedProduct.USBcount }}
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="addToBuild()">
+            Hozzáadás az összeállításhoz
+          </button>
+        </div>
+      </mat-card>
     </div>
+
+
+    <div *ngIf="selectedProduct?.category === 'MotherBoard'">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-title>Specifikációk</mat-card-title>
+        <mat-divider></mat-divider>
+
+        <div class="details-grid">
+          <div class="detail-item"><strong>Socket:</strong> {{ selectedProduct.socket }}</div>
+          <div class="detail-item"><strong>Chipset:</strong> {{ selectedProduct.chipset }}</div>
+          <div class="detail-item"><strong>Szerver alaplap:</strong> {{ selectedProduct.isServer ? 'Igen' : 'Nem' }}</div>
+          <div class="detail-item"><strong>Max memória:</strong> {{ selectedProduct.maxMemori }} GB</div>
+          <div class="detail-item"><strong>Memória foglalatok:</strong> {{ selectedProduct.memoriSockets }}</div>
+          <div class="detail-item"><strong>Memória típus:</strong> {{ selectedProduct.memoriType }}</div>
+          <div class="detail-item"><strong>SATA portok:</strong> {{ selectedProduct.sataCount }}</div>
+          <div class="detail-item"><strong>Wi-Fi:</strong> {{ selectedProduct.wifi ? 'Van' : 'Nincs' }}</div>
+          <div class="detail-item"><strong>Bluetooth:</strong> {{ selectedProduct.bluetooth ? 'Van' : 'Nincs' }}</div>
+          <div class="detail-item"><strong>HDMI:</strong> {{ selectedProduct.isHdmi ? 'Van' : 'Nincs' }}</div>
+          <div class="detail-item"><strong>DisplayPort:</strong> {{ selectedProduct.isDisplayPort ? 'Van' : 'Nincs' }}</div>
+          <div class="detail-item"><strong>USB portok:</strong> {{ selectedProduct.USBPortCount }}</div>
+          <div class="detail-item"><strong>Hangkártya:</strong> {{ selectedProduct.isHangKartya ? 'Van' : 'Nincs' }}</div>
+          <div class="detail-item"><strong>Alaplap méret:</strong> {{ selectedProduct.meret }}</div>
+          <div class="detail-item"><strong>Fizikai méret:</strong> {{ selectedProduct.size }}</div>
+          <div class="detail-item"><strong>M.2 foglalatok:</strong> {{ selectedProduct.m2count }}</div>
+        </div>
+
+        <div *ngIf="selectedProduct?.ports" class="ports-section">
+          <h4>Portok:</h4>
+          <ul>
+            <li *ngFor="let key of objectKeys(selectedProduct.ports)">
+              {{ key }}: {{ selectedProduct.ports[key] }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="addToBuild()">
+            Hozzáadás az összeállításhoz
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <div *ngIf="selectedProduct?.category === 'CPU'">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-title>Specifikációk</mat-card-title>
+        <mat-divider></mat-divider>
+
+        <div class="details-grid">
+          <div class="detail-item"><strong>Magok (cores):</strong> {{ selectedProduct.cores }}</div>
+          <div class="detail-item"><strong>Szálak (threads):</strong> {{ selectedProduct.thread }}</div>
+          <div class="detail-item"><strong>TDP:</strong> {{ selectedProduct.TDP }} W</div>
+          <div class="detail-item"><strong>Socket:</strong> {{ selectedProduct.socket }}</div>
+          <div class="detail-item"><strong>Órajel:</strong> {{ selectedProduct.clockSpeed }} GHz</div>
+          <div class="detail-item"><strong>Turbo órajel:</strong> {{ selectedProduct.turboClockSpeed }} GHz</div>
+          <div class="detail-item"><strong>Integrált GPU:</strong> {{ selectedProduct.integratedGPU }}</div>
+        </div>
+
+        <div *ngIf="selectedProduct?.cache" class="cache-section" style="margin-top: 16px;">
+          <h4>Cache:</h4>
+          <ul>
+            <li *ngFor="let key of objectKeys(selectedProduct.cache)">
+              {{ key }}: {{ selectedProduct.cache[key] }} KB
+            </li>
+          </ul>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="addToBuild()">
+            Hozzáadás az összeállításhoz
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <div *ngIf="selectedProduct?.category === 'RAM'">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-title>Specifikációk</mat-card-title>
+        <mat-divider></mat-divider>
+
+        <div class="details-grid">
+          <div class="detail-item"><strong>Memóriaméret:</strong> {{ selectedProduct.memorySize }} MB</div>
+          <div class="detail-item"><strong>Órajel sebesség:</strong> {{ selectedProduct.speed }} MHz</div>
+          <div class="detail-item"><strong>Package:</strong> {{ selectedProduct.package }}</div>
+          <div class="detail-item"><strong>Memória típus:</strong> {{ selectedProduct.type }}</div>
+          <div class="detail-item"><strong>Késleltetés:</strong> {{ selectedProduct.kesleltetes }}</div>
+          <div class="detail-item"><strong>Hűtőborda:</strong> {{ selectedProduct.hutoborda ? 'Igen' : 'Nem' }}</div>
+          <div class="detail-item"><strong>LED:</strong> {{ selectedProduct.LED ? 'Igen' : 'Nem' }}</div>
+          <div class="detail-item"><strong>Feszültség:</strong> {{ selectedProduct.voltage }} V</div>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="addToBuild()">
+            Hozzáadás az összeállításhoz
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+
+    <div *ngIf="selectedProduct?.category === 'Cooler'">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-title>Specifikációk</mat-card-title>
+        <mat-divider></mat-divider>
+
+        <div class="details-grid">
+          <div class="detail-item"><strong>Ventilátor méret:</strong> {{ selectedProduct.ventSize }}</div>
+          <div class="detail-item"><strong>Ventilátor sebesség:</strong> {{ selectedProduct.ventSpeed }}</div>
+          <div class="detail-item"><strong>Max zajszint:</strong> {{ selectedProduct.maxNoise }}</div>
+          <div class="detail-item"><strong>Légszállítás:</strong> {{ selectedProduct.airFlow }}</div>
+          <div class="detail-item"><strong>LED:</strong> {{ selectedProduct.LED ? 'Igen' : 'Nem' }}</div>
+          <div class="detail-item"><strong>Méret:</strong> {{ selectedProduct.size }}</div>
+          <div class="detail-item"><strong>Támogatott socketek:</strong> {{ selectedProduct.socket?.join(', ') }}</div>
+          <div class="detail-item"><strong>Súly:</strong> {{ selectedProduct.wieght }} kg</div>
+          <div class="detail-item"><strong>TDP:</strong> {{ selectedProduct.TDP }} W</div>
+          <div class="detail-item"><strong>Típus:</strong> {{ selectedProduct.type }}</div>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="addToBuild()">
+            Hozzáadás az összeállításhoz
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <div *ngIf="selectedProduct?.category === 'GPU'">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-title>Specifikációk</mat-card-title>
+        <mat-divider></mat-divider>
+
+        <div class="details-grid">
+          <div class="detail-item"><strong>Chip sebesség:</strong> {{ selectedProduct.chipSpeed }} MHz</div>
+          <div class="detail-item"><strong>Chip memória sebesség:</strong> {{ selectedProduct.chipMemoriSpeed }} MHz</div>
+          <div class="detail-item"><strong>Ajánlott TDP:</strong> {{ selectedProduct.recomendedTdp }} W</div>
+          <div class="detail-item"><strong>Chipset:</strong> {{ selectedProduct.chipset }}</div>
+          <div class="detail-item"><strong>Chipset család:</strong> {{ selectedProduct.chipsetfamily }}</div>
+          <div class="detail-item"><strong>Hűtés típusa:</strong> {{ selectedProduct.cooling }}</div>
+          <div class="detail-item"><strong>Ventilátorok száma:</strong> {{ selectedProduct.ventcount }}</div>
+          <div class="detail-item"><strong>Memória méret:</strong> {{ selectedProduct.memoriAmount }} GB</div>
+          <div class="detail-item"><strong>Memória típusa:</strong> {{ selectedProduct.memoryType }}</div>
+          <div class="detail-item"><strong>Memória sávszélesség:</strong> {{ selectedProduct.memorySavszelesseg }} GB/s</div>
+          <div class="detail-item"><strong>Max felbontás:</strong> {{ selectedProduct.maxFelbontas }}</div>
+          <div class="detail-item"><strong>DirectX:</strong> {{ selectedProduct.DirectX }}</div>
+          <div class="detail-item"><strong>Tápcsatlakozó:</strong> {{ selectedProduct.TapCsatlakozo }}</div>
+          <div class="detail-item"><strong>LED:</strong> {{ selectedProduct.LED ? 'Igen' : 'Nem' }}</div>
+          <div class="detail-item"><strong>Szín:</strong> {{ selectedProduct.color }}</div>
+
+          <div class="detail-item"><strong>Használt technológiák:</strong> {{ selectedProduct.usedTech?.join(', ') }}</div>
+          <div class="detail-item"><strong>DLSS:</strong> {{ selectedProduct.DLSS?.join(', ') }}</div>
+
+          <div class="detail-item full-width">
+            <strong>VGA portok:</strong> {{ getPortStatus(selectedProduct.VGA) }}
+          </div>
+
+          <div class="detail-item full-width">
+            <strong>DVI portok:</strong> {{ getPortStatus(selectedProduct.DVI) }}
+          </div>
+
+          <div class="detail-item full-width">
+            <strong>HDMI portok:</strong> {{ getPortStatus(selectedProduct.HDMI) }}
+          </div>
+
+          <div class="detail-item full-width">
+            <strong>Display portok:</strong> {{ getPortStatus(selectedProduct.Display) }}
+          </div>
+
+          <div class="detail-item full-width">
+            <strong>Type-C portok:</strong> {{ getPortStatus(selectedProduct.Type_C) }}
+          </div>
+
+
+          <div class="detail-item"><strong>Szélesség:</strong> {{ selectedProduct.szelesseg }} mm</div>
+          <div class="detail-item"><strong>Hosszúság:</strong> {{ selectedProduct.hosszusag }} mm</div>
+          <div class="detail-item"><strong>Vastagság:</strong> {{ selectedProduct.vastagsag }} mm</div>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="addToBuild()">
+            Hozzáadás az összeállításhoz
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <div *ngIf="selectedProduct?.category === 'PSU'">
+      <mat-card class="mat-elevation-z4">
+        <mat-card-title>Tápegység specifikációk</mat-card-title>
+        <mat-divider></mat-divider>
+
+        <div class="details-grid">
+          <div class="detail-item"><strong>Teljesítmény:</strong> {{ selectedProduct.power }} W</div>
+          <div class="detail-item"><strong>Hatásfok:</strong> {{ selectedProduct.rate }}</div>
+          <div class="detail-item"><strong>Zajszint:</strong> {{ selectedProduct.noise }}</div>
+          <div class="detail-item"><strong>Típus:</strong> {{ selectedProduct.type }}</div>
+          <div class="detail-item"><strong>PFC:</strong> {{ selectedProduct.PFC }}</div>
+          <div class="detail-item"><strong>Ventilátor méret:</strong> {{ selectedProduct.ventSize }} mm</div>
+          <div class="detail-item full-width">
+            <strong>Max. légbevezetés:</strong> {{ getPortStatus(selectedProduct.maxIntake) }}
+          </div>
+          <div class="detail-item"><strong>Tap Kapcsoló:</strong> {{ selectedProduct.tapKapcs ? 'Van' : 'Nincs' }}</div>
+          <div class="detail-item"><strong>110V Kapcsoló:</strong> {{ selectedProduct.v110Kapcs ? 'Van' : 'Nincs' }}</div>
+
+          <div class="detail-item full-width">
+            <strong>FDD csatlakozók:</strong> {{ getPortStatus(selectedProduct.FDD) }}
+          </div>
+          <div class="detail-item full-width">
+            <strong>HDD csatlakozók:</strong> {{ getPortStatus(selectedProduct.HDD) }}
+          </div>
+          <div class="detail-item full-width">
+            <strong>SATA csatlakozók:</strong> {{ getPortStatus(selectedProduct.SATA) }}
+          </div>
+          <div class="detail-item full-width">
+            <strong>PCI Express csatlakozók:</strong> {{ getPortStatus(selectedProduct.PCI_Expresss) }}
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="addToBuild()">
+            Hozzáadás az összeállításhoz
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+
   </div>
 </div>
