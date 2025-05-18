@@ -3,6 +3,7 @@
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.7.
 
 ## Téma: Számítógép alkatrész összehasonlító
+admin: email: goon@gmail.com jelszó: 123456
 
 
 ## FONTOS: Egy része a kódnak még nincs meg de minden van benne ami kell az első mérföldkőhöz.
