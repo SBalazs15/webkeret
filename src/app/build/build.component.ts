@@ -145,11 +145,10 @@ export class BuildComponent {
     try {
       const buildsCollection = collection(this.firestore, 'Builds');
 
-      // 1. Lekérjük a legnagyobb id-jú buildet a felhasználóhoz
+      // 1. Lekérjük a legnagyobb id-jú buildet az összes build közül
       const q = query(
         buildsCollection,
-        where('uid', '==', user.uid),
-        orderBy('id', 'desc'), // legnagyobb ID előre
+        orderBy('id', 'desc'),
         limit(1)
       );
       const querySnapshot = await getDocs(q);
@@ -157,15 +156,15 @@ export class BuildComponent {
       let newId = 1;
       if (!querySnapshot.empty) {
         const lastBuild = querySnapshot.docs[0].data() as Build;
-        // lastBuild.id szám, így csak növeljük
         newId = lastBuild.id + 1;
       }
 
       this.buildModel.id = newId;
 
-      // 2. Új dokumentum létrehozása az új id-vel mint dokumentum ID
-      // Dokumentum ID string kell, ezért toString()
-      const newDocRef = doc(buildsCollection, newId.toString());
+      // 2. Dokumentum ID legyen egyedi string, pl. 'userID-id'
+      const newDocId = `${user.uid}-${newId}`;
+      const newDocRef = doc(buildsCollection, newDocId);
+
       await setDoc(newDocRef, this.buildModel);
 
       alert('A build sikeresen mentve!');

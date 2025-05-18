@@ -708,9 +708,9 @@
       </div>
 
       <!-- Jobb oldal -->
-      <div class="form-column">
-        <!-- Dinamikusan hozzáadott mezők -->
-        <div class="form-section">
+      <div [ngClass]="'form-column'">
+      <!-- Dinamikusan hozzáadott mezők -->
+        <div [ngClass]="'form-section'">
           <h3>Maximális  áramfelvétel</h3>
           <div *ngFor="let intake of maxIntakeArray; let i = index" class="port-row">
             <mat-form-field appearance="fill" class="port-input">

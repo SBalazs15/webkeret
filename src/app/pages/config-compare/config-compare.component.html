@@ -1,1 +1,393 @@
-<p>config-compare works!</p>
+<div class="compare-container">
+
+  <div id="kulso">
+    <h2>Konfigok összehasonlítása</h2>
+
+    <div class="checkboxes">
+      <mat-checkbox [(ngModel)]="showOnlyOwn" (change)="filterBuilds()">Csak saját konfigok</mat-checkbox>
+    </div>
+
+    <div class="search-section">
+      <!-- BAL KERESŐ -->
+      <div id="bal">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Keresés név alapján...</mat-label>
+          <input matInput [(ngModel)]="searchQueryLeft" [matAutocomplete]="autoLeft" />
+          <mat-autocomplete #autoLeft="matAutocomplete" (optionSelected)="onSelectLeft($event)">
+            <mat-option *ngFor="let item of filteredListLeft" [value]="item.displayName">
+              {{ item.displayName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <button class="torlesGomb" mat-button color="warn" (click)="resetSelection('left')" *ngIf="selectedLeft">Törlés</button>
+      </div>
+
+      <!-- JOBB KERESŐ -->
+      <div id="jobb">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Keresés név alapján...</mat-label>
+          <input matInput [(ngModel)]="searchQueryRight" [matAutocomplete]="autoRight" />
+          <mat-autocomplete #autoRight="matAutocomplete" (optionSelected)="onSelectRight($event)">
+            <mat-option *ngFor="let item of filteredListRight" [value]="item.displayName">
+              {{ item.displayName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <button class="torlesGomb" mat-button color="warn" (click)="resetSelection('right')" *ngIf="selectedRight">Törlés</button>
+      </div>
+    </div>
+
+      <div style="width: 100%; text-align: center; margin-top: 20px;">
+        <button mat-raised-button color="primary" (click)="onCompareClick()">Összehasonlítás</button>
+      </div>
+    </div>
+
+  <div *ngIf="showComparison" class="comparison-result" style="margin-top: 30px; display: flex; justify-content: space-between; gap: 20px;">
+
+    <!-- BAL OLDAL -->
+    <mat-card class="build-details" style="width: 48%; padding: 10px">
+      <mat-card-title>
+        <div style="font-size: xx-large; display: flex; justify-content: center; width: 100%; margin-bottom: 20px">
+          {{ selectedBuildLeft?.displayName || 'Bal oldali konfig' }}
+        </div>
+      </mat-card-title>
+
+      <mat-card-content>
+        <div *ngIf="selectedBuildLeft; else noLeftBuild">
+
+          <h4>CPU</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildLeft.cpu; else noCPU">
+            Név: {{ selectedBuildLeft.cpu.name }} <br>
+            Magok: {{ selectedBuildLeft.cpu.cores }} <br>
+            Szálak: {{ selectedBuildLeft.cpu.thread }} <br>
+            TDP: {{ selectedBuildLeft.cpu.TDP }} W <br>
+            Socket: {{ selectedBuildLeft.cpu.socket }} <br>
+            Órajel: {{ selectedBuildLeft.cpu.clockSpeed }} GHz <br>
+            Turbo: {{ selectedBuildLeft.cpu.turboClockSpeed }} GHz <br>
+            Integrált GPU: {{ selectedBuildLeft.cpu.integratedGPU || 'Nincs' }} <br>
+
+            Cache:
+            <ng-container *ngIf="selectedBuildLeft.cpu.cache">
+              <ul style="margin: 0; padding-left: 35px;">
+                <li *ngFor="let entry of selectedBuildLeft.cpu.cache | keyvalue">
+                  {{ entry.key }}: {{ entry.value }} KB
+                </li>
+              </ul>
+            </ng-container>
+          </p>
+          <ng-template #noCPU><p>CPU: Nincs adat</p></ng-template>
+
+          <h4>GPU</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildLeft.gpu; else noGPU">
+            Név: {{ selectedBuildLeft.gpu.name }} <br>
+            Chip sebesség: {{ selectedBuildLeft.gpu.chipSpeed }} MHz <br>
+            Memória sebesség: {{ selectedBuildLeft.gpu.chipMemoriSpeed }} MHz <br>
+            TDP: {{ selectedBuildLeft.gpu.recomendedTdp }} W <br>
+            Chipset: {{ selectedBuildLeft.gpu.chipset }} <br>
+            Chipset család: {{ selectedBuildLeft.gpu.chipsetfamily }} <br>
+            Hűtés típusa: {{ selectedBuildLeft.gpu.cooling }} <br>
+            Ventilátorok száma: {{ selectedBuildLeft.gpu.ventcount }} <br>
+            Memória méret: {{ selectedBuildLeft.gpu.memoriAmount }} GB <br>
+            Memória típusa: {{ selectedBuildLeft.gpu.memoryType }} <br>
+            Memória sávszélesség: {{ selectedBuildLeft.gpu.memorySavszelesseg }} GB/s <br>
+            Maximális felbontás: {{ selectedBuildLeft.gpu.maxFelbontas }} <br>
+            DirectX verzió: {{ selectedBuildLeft.gpu.DirectX }} <br>
+            Tápcsatlakozó: {{ selectedBuildLeft.gpu.TapCsatlakozo }} <br>
+            Szín: {{ selectedBuildLeft.gpu.color }} <br>
+            LED: {{ selectedBuildLeft.gpu.LED ? 'Igen' : 'Nem' }} <br><br>
+
+            <strong> Használt technológiák:</strong>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li *ngFor="let tech of selectedBuildLeft.gpu.usedTech">{{ tech }}</li>
+          </ul><br>
+
+          <strong>DLSS támogatás:</strong><br><br>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li *ngFor="let dlss of selectedBuildLeft.gpu.DLSS">{{ dlss }}</li>
+          </ul>
+
+          <strong>Csatlakozók:</strong>
+
+          <div *ngIf="selectedBuildLeft?.gpu && !isMapEmpty(selectedBuildLeft.gpu.VGA); else noVGAConn">
+            <strong>VGA:</strong>
+            <ul style="margin: 0; padding-left: 35px;">
+              <li *ngFor="let entry of selectedBuildLeft.gpu.VGA | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noVGAConn><p><strong>VGA:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildLeft?.gpu && !isMapEmpty(selectedBuildLeft.gpu.DVI); else noDVIConn">
+            <strong>DVI:</strong>
+            <ul style="margin: 0; padding-left: 35px;">
+              <li *ngFor="let entry of selectedBuildLeft.gpu.DVI | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noDVIConn><p><strong>DVI:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildLeft?.gpu && !isMapEmpty(selectedBuildLeft.gpu.HDMI); else noHDMIConn">
+            <strong>HDMI:</strong>
+            <ul style="margin: 0; padding-left: 35px;">
+              <li *ngFor="let entry of selectedBuildLeft.gpu.HDMI | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noHDMIConn><p><strong>HDMI:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildLeft?.gpu && !isMapEmpty(selectedBuildLeft.gpu.Display); else noDisplayConn">
+            <strong>DisplayPort:</strong>
+            <ul style="margin: 0; padding-left: 35px;">
+              <li *ngFor="let entry of selectedBuildLeft.gpu.Display | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noDisplayConn><p><strong>DisplayPort:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildLeft?.gpu && !isMapEmpty(selectedBuildLeft.gpu.Type_C); else noTypeCConn">
+            <strong>Type-C:</strong>
+            <ul style="margin: 0; padding-left: 15px;">
+              <li *ngFor="let entry of selectedBuildLeft.gpu.Type_C | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul>
+          </div>
+          <ng-template #noTypeCConn><p><strong>Type-C:</strong> Nincs csatlakozó</p></ng-template>
+
+          <strong>Méretek (mm):</strong>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li>Szélesség: {{ selectedBuildLeft.gpu.szelesseg }}</li>
+            <li>Hosszúság: {{ selectedBuildLeft.gpu.hosszusag }}</li>
+            <li>Vastagság: {{ selectedBuildLeft.gpu.vastagsag }}</li>
+          </ul>
+
+          <ng-template #noGPU><p>GPU: Nincs adat</p></ng-template>
+
+          <h4>Alaplap</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildLeft.motherboard; else noMB">
+            Név: {{ selectedBuildLeft.motherboard.name }} <br>
+            Socket: {{ selectedBuildLeft.motherboard.socket }} <br>
+            Chipset: {{ selectedBuildLeft.motherboard.chipset }} <br>
+            Memória foglalatok száma: {{ selectedBuildLeft.motherboard.memoriSockets }} <br>
+            Memória típusa: {{ selectedBuildLeft.motherboard.memoriType }} <br>
+            Maximális memória: {{ selectedBuildLeft.motherboard.maxMemori }} GB <br>
+            SATA csatlakozók száma: {{ selectedBuildLeft.motherboard.sataCount }} <br>
+            M.2 foglalatok száma: {{ selectedBuildLeft.motherboard.m2count }} <br>
+            USB portok száma: {{ selectedBuildLeft.motherboard.USBPortCount }} <br>
+            WiFi: {{ selectedBuildLeft.motherboard.wifi ? 'Igen' : 'Nem' }} <br>
+            Bluetooth: {{ selectedBuildLeft.motherboard.bluetooth ? 'Igen' : 'Nem' }} <br>
+            HDMI támogatás: {{ selectedBuildLeft.motherboard.isHdmi ? 'Igen' : 'Nem' }} <br>
+            DisplayPort támogatás: {{ selectedBuildLeft.motherboard.isDisplayPort ? 'Igen' : 'Nem' }} <br>
+            Hangkártya: {{ selectedBuildLeft.motherboard.isHangKartya ? 'Igen' : 'Nem' }} <br>
+            Méret: {{ selectedBuildLeft.motherboard.meret }} ({{ selectedBuildLeft.motherboard.size }}) <br><br>
+
+            <strong>Portok:</strong>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li *ngFor="let port of selectedBuildLeft.motherboard.ports | keyvalue">
+              {{ port.key }}: {{ port.value }}
+            </li>
+          </ul>
+
+          <ng-template #noMB><p>Alaplap: Nincs adat</p></ng-template>
+
+          <h4>RAM</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildLeft.ram; else noRAM">
+            Név: {{ selectedBuildLeft.ram.name }} <br>
+            Sebesség: {{ selectedBuildLeft.ram.speed }} MHz <br>
+            Méret: {{ selectedBuildLeft.ram.memorySize }} GB <br>
+            Típus: {{ selectedBuildLeft.ram.type }} <br>
+            Késleltetés: {{ selectedBuildLeft.ram.kesleltetes }} <br>
+            LED: {{ selectedBuildLeft.ram.LED ? 'Igen' : 'Nem' }} <br>
+            Hűtőborda: {{ selectedBuildLeft.ram.hutoborda ? 'Igen' : 'Nem' }} <br>
+            Feszültség: {{ selectedBuildLeft.ram.voltage }} V
+          </p>
+          <ng-template #noRAM><p>RAM: Nincs adat</p></ng-template>
+
+        </div>
+        <ng-template #noLeftBuild><p>Kérlek válassz bal oldali buildet a keresőből.</p></ng-template>
+      </mat-card-content>
+    </mat-card>
+
+
+
+    <!-- JOBB OLDAL -->
+    <mat-card class="build-details" style="width: 48%; padding: 10px">
+      <mat-card-title>
+        <div style="font-size: xx-large; display: flex; justify-content: center; width: 100%; margin-bottom: 20px">
+          {{ selectedBuildRight?.displayName || 'Jobb oldali konfig' }}
+        </div>
+      </mat-card-title>
+      <mat-card-content>
+        <div *ngIf="selectedBuildRight; else noRightBuild">
+
+          <h4>CPU</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildRight.cpu; else noCPU">
+            Név: {{ selectedBuildRight.cpu.name }} <br>
+            Magok: {{ selectedBuildRight.cpu.cores }} <br>
+            Szálak: {{ selectedBuildRight.cpu.thread }} <br>
+            TDP: {{ selectedBuildRight.cpu.TDP }} W <br>
+            Socket: {{ selectedBuildRight.cpu.socket }} <br>
+            Órajel: {{ selectedBuildRight.cpu.clockSpeed }} GHz <br>
+            Turbo: {{ selectedBuildRight.cpu.turboClockSpeed }} GHz <br>
+            Integrált GPU: {{ selectedBuildRight.cpu.integratedGPU || 'Nincs' }}<br>
+
+            Cache:
+            <ng-container *ngIf="selectedBuildRight.cpu.cache">
+              <ul style="margin: 0; padding-left: 35px;">
+                <li *ngFor="let entry of selectedBuildRight.cpu.cache | keyvalue">
+                  {{ entry.key }}: {{ entry.value }} KB
+                </li>
+              </ul>
+            </ng-container>
+          </p>
+          <ng-template #noCPU><p>CPU: Nincs adat</p></ng-template>
+
+          <h4>GPU</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildRight.gpu; else noGPU">
+            Név: {{ selectedBuildRight.gpu.name }} <br>
+            Chip sebesség: {{ selectedBuildRight.gpu.chipSpeed }} MHz <br>
+            Memória sebesség: {{ selectedBuildRight.gpu.chipMemoriSpeed }} MHz <br>
+            TDP: {{ selectedBuildRight.gpu.recomendedTdp }} W <br>
+            Chipset: {{ selectedBuildRight.gpu.chipset }} <br>
+            Chipset család: {{ selectedBuildRight.gpu.chipsetfamily }} <br>
+            Hűtés típusa: {{ selectedBuildRight.gpu.cooling }} <br>
+            Ventilátorok száma: {{ selectedBuildRight.gpu.ventcount }} <br>
+            Memória méret: {{ selectedBuildRight.gpu.memoriAmount }} GB <br>
+            Memória típusa: {{ selectedBuildRight.gpu.memoryType }} <br>
+            Memória sávszélesség: {{ selectedBuildRight.gpu.memorySavszelesseg }} GB/s <br>
+            Maximális felbontás: {{ selectedBuildRight.gpu.maxFelbontas }} <br>
+            DirectX verzió: {{ selectedBuildRight.gpu.DirectX }} <br>
+            Tápcsatlakozó: {{ selectedBuildRight.gpu.TapCsatlakozo }} <br>
+            Szín: {{ selectedBuildRight.gpu.color }} <br>
+            LED: {{ selectedBuildRight.gpu.LED ? 'Igen' : 'Nem' }} <br><br>
+
+            <strong>Használt technológiák:</strong>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li *ngFor="let tech of selectedBuildRight.gpu.usedTech">{{ tech }}</li>
+          </ul><br>
+
+          <strong>DLSS támogatás:</strong><br><br>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li *ngFor="let dlss of selectedBuildRight.gpu.DLSS">{{ dlss }}</li>
+          </ul>
+
+          Csatlakozók:
+
+          <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.VGA); else noVGAConnRight">
+            <strong>VGA:</strong>
+            <ul style="margin: 0; padding-left: 35px;">
+              <li *ngFor="let entry of selectedBuildRight.gpu.VGA | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noVGAConnRight><p><strong>VGA:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.DVI); else noDVIConnRight">
+            <strong>DVI:</strong>
+            <ul style="margin: 0; padding-left: 15px;">
+              <li *ngFor="let entry of selectedBuildRight.gpu.DVI | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noDVIConnRight><p><strong>DVI:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.HDMI); else noHDMIConnRight">
+            <strong>HDMI:</strong>
+            <ul style="margin: 0; padding-left: 15px;">
+              <li *ngFor="let entry of selectedBuildRight.gpu.HDMI | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noHDMIConnRight><p><strong>HDMI:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.Display); else noDisplayConnRight">
+            <strong>DisplayPort:</strong>
+            <ul style="margin: 0; padding-left: 15px;">
+              <li *ngFor="let entry of selectedBuildRight.gpu.Display | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul><br>
+          </div>
+          <ng-template #noDisplayConnRight><p><strong>DisplayPort:</strong> Nincs csatlakozó</p></ng-template>
+
+          <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.Type_C); else noTypeCConnRight">
+            <strong>Type-C:</strong>
+            <ul style="margin: 0; padding-left: 15px;">
+              <li *ngFor="let entry of selectedBuildRight.gpu.Type_C | keyvalue">
+                {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
+              </li>
+            </ul>
+          </div>
+          <ng-template #noTypeCConnRight><p><strong>Type-C:</strong> Nincs csatlakozó</p></ng-template>
+
+          <strong>Méretek (mm):</strong>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li>Szélesség: {{ selectedBuildRight.gpu.szelesseg }}</li>
+            <li>Hosszúság: {{ selectedBuildRight.gpu.hosszusag }}</li>
+            <li>Vastagság: {{ selectedBuildRight.gpu.vastagsag }}</li>
+          </ul>
+
+          <ng-template #noGPU><p>GPU: Nincs adat</p></ng-template>
+
+          <h4>Alaplap</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildRight.motherboard; else noMB">
+            Név: {{ selectedBuildRight.motherboard.name }} <br>
+            Socket: {{ selectedBuildRight.motherboard.socket }} <br>
+            Chipset: {{ selectedBuildRight.motherboard.chipset }} <br>
+            Memória foglalatok száma: {{ selectedBuildRight.motherboard.memoriSockets }} <br>
+            Memória típusa: {{ selectedBuildRight.motherboard.memoriType }} <br>
+            Maximális memória: {{ selectedBuildRight.motherboard.maxMemori }} GB <br>
+            SATA csatlakozók száma: {{ selectedBuildRight.motherboard.sataCount }} <br>
+            M.2 foglalatok száma: {{ selectedBuildRight.motherboard.m2count }} <br>
+            USB portok száma: {{ selectedBuildRight.motherboard.USBPortCount }} <br>
+            WiFi: {{ selectedBuildRight.motherboard.wifi ? 'Igen' : 'Nem' }} <br>
+            Bluetooth: {{ selectedBuildRight.motherboard.bluetooth ? 'Igen' : 'Nem' }} <br>
+            HDMI támogatás: {{ selectedBuildRight.motherboard.isHdmi ? 'Igen' : 'Nem' }} <br>
+            DisplayPort támogatás: {{ selectedBuildRight.motherboard.isDisplayPort ? 'Igen' : 'Nem' }} <br>
+            Hangkártya: {{ selectedBuildRight.motherboard.isHangKartya ? 'Igen' : 'Nem' }} <br>
+            Méret: {{ selectedBuildRight.motherboard.meret }} ({{ selectedBuildRight.motherboard.size }}) <br><br>
+
+            <strong>Portok:</strong>
+          <ul style="margin: 0; padding-left: 35px;">
+            <li *ngFor="let port of selectedBuildRight.motherboard.ports | keyvalue">
+              {{ port.key }}: {{ port.value }}
+            </li>
+          </ul>
+
+          <ng-template #noMB><p>Alaplap: Nincs adat</p></ng-template>
+
+          <h4>RAM</h4>
+          <mat-divider></mat-divider>
+          <p *ngIf="selectedBuildRight.ram; else noRAM">
+            Név: {{ selectedBuildRight.ram.name }} <br>
+            Sebesség: {{ selectedBuildRight.ram.speed }} MHz <br>
+            Méret: {{ selectedBuildRight.ram.memorySize }} GB <br>
+            Típus: {{ selectedBuildRight.ram.type }} <br>
+            Késleltetés: {{ selectedBuildRight.ram.kesleltetes }} <br>
+            LED: {{ selectedBuildRight.ram.LED ? 'Igen' : 'Nem' }} <br>
+            Hűtőborda: {{ selectedBuildRight.ram.hutoborda ? 'Igen' : 'Nem' }} <br>
+            Feszültség: {{ selectedBuildRight.ram.voltage }} V
+          </p>
+          <ng-template #noRAM><p>RAM: Nincs adat</p></ng-template>
+
+        </div>
+        <ng-template #noRightBuild><p>Kérlek válassz jobb oldali buildet a keresőből.</p></ng-template>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>
