@@ -219,8 +219,8 @@
 
 
     <!-- JOBB OLDAL -->
-    <mat-card class="build-details" style="width: 48%; padding: 10px">
-      <mat-card-title>
+    <mat-card [ngClass]="'build-details'" [ngStyle]="{ 'width': '48%', 'padding': '10px' }">
+    <mat-card-title>
         <div style="font-size: xx-large; display: flex; justify-content: center; width: 100%; margin-bottom: 20px">
           {{ selectedBuildRight?.displayName || 'Jobb oldali konfig' }}
         </div>
@@ -295,7 +295,7 @@
 
           <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.DVI); else noDVIConnRight">
             <strong>DVI:</strong>
-            <ul style="margin: 0; padding-left: 15px;">
+            <ul style="margin: 0; padding-left: 35px;">
               <li *ngFor="let entry of selectedBuildRight.gpu.DVI | keyvalue">
                 {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
               </li>
@@ -305,7 +305,7 @@
 
           <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.HDMI); else noHDMIConnRight">
             <strong>HDMI:</strong>
-            <ul style="margin: 0; padding-left: 15px;">
+            <ul style="margin: 0; padding-left: 35px;">
               <li *ngFor="let entry of selectedBuildRight.gpu.HDMI | keyvalue">
                 {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
               </li>
@@ -315,7 +315,7 @@
 
           <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.Display); else noDisplayConnRight">
             <strong>DisplayPort:</strong>
-            <ul style="margin: 0; padding-left: 15px;">
+            <ul style="margin: 0; padding-left: 35px;">
               <li *ngFor="let entry of selectedBuildRight.gpu.Display | keyvalue">
                 {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
               </li>
@@ -325,7 +325,7 @@
 
           <div *ngIf="selectedBuildRight?.gpu && !isMapEmpty(selectedBuildRight.gpu.Type_C); else noTypeCConnRight">
             <strong>Type-C:</strong>
-            <ul style="margin: 0; padding-left: 15px;">
+            <ul style="margin: 0; padding-left: 35px;">
               <li *ngFor="let entry of selectedBuildRight.gpu.Type_C | keyvalue">
                 {{ entry.key ? 'Van' : 'Nincs' }}: {{ entry.value }}
               </li>
@@ -362,8 +362,8 @@
             Méret: {{ selectedBuildRight.motherboard.meret }} ({{ selectedBuildRight.motherboard.size }}) <br><br>
 
             <strong>Portok:</strong>
-          <ul style="margin: 0; padding-left: 35px;">
-            <li *ngFor="let port of selectedBuildRight.motherboard.ports | keyvalue">
+          <ul [ngStyle]="{ 'margin': '0', 'padding-left': '35px' }">
+          <li *ngFor="let port of selectedBuildRight.motherboard.ports | keyvalue">
               {{ port.key }}: {{ port.value }}
             </li>
           </ul>

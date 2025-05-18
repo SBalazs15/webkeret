@@ -239,7 +239,7 @@
         <mat-divider></mat-divider>
 
         <div class="details-grid">
-          <div class="detail-item"><strong>Teljesítmény:</strong> {{ selectedProduct.power }} W</div>
+          <div class="detail-item"><strong>Teljesítmény:</strong> {{ selectedProduct.power | watt }}</div>
           <div class="detail-item"><strong>Hatásfok:</strong> {{ selectedProduct.rate }}</div>
           <div class="detail-item"><strong>Zajszint:</strong> {{ selectedProduct.noise }}</div>
           <div class="detail-item"><strong>Típus:</strong> {{ selectedProduct.type }}</div>

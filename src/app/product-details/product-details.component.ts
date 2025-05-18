@@ -4,6 +4,7 @@ import { PricePipe } from '../price.pipe';
 import {MatButton} from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
 import {MatDivider} from '@angular/material/list';
+import {Watt} from '../watt.pipe';
 
 @Component({
   selector: 'app-product-details',
@@ -16,7 +17,8 @@ import {MatDivider} from '@angular/material/list';
     MatCard,
     MatCardTitle,
     MatDivider,
-    MatCardContent
+    MatCardContent,
+    Watt
   ],
   styleUrls: ['./product-details.component.css']
 })

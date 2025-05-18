@@ -22,7 +22,7 @@ import {
   MatInput,
   MatLabel
 } from '@angular/material/input';
-import {KeyValuePipe, NgForOf, NgIf} from '@angular/common';
+import {KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
 import {MatDivider} from '@angular/material/list';
@@ -48,7 +48,9 @@ import {MatDivider} from '@angular/material/list';
     MatCardTitle,
     MatCard,
     MatCardContent,
-    KeyValuePipe
+    KeyValuePipe,
+    NgStyle,
+    NgClass
   ],
   templateUrl: './config-compare.component.html',
   styleUrl: './config-compare.component.css'
