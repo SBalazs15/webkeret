@@ -14,5 +14,5 @@ import { NavbarComponent } from './navbar.component';
   `
 })
 export class AppComponent {
-  title = 'projekt';
+  title = 'BuildCompare';
 }
