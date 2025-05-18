@@ -60,7 +60,6 @@
               filtered = filtered.filter(product => {
                 const matchesSocket = product.socket?.includes(this.socket);
 
-                // Méret parszolása: "150 x 165 x 161"
                 const sizeParts = product.size?.split('x').map((part: string) => parseInt(part.trim(), 10));
                 const height = sizeParts && sizeParts.length === 3 ? sizeParts[1] : null;
 

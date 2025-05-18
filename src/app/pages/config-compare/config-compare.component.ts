@@ -70,11 +70,9 @@ export class ConfigCompareComponent implements OnInit {
   showOnlyOwn = false;
   showComparison = false;
 
-  // ** Új változók a kiválasztott build objektumok tárolására **
   selectedBuildLeft: BuildDisplay | null = null;
   selectedBuildRight: BuildDisplay | null = null;
 
-  // Az összes build egy helyen (hasznos az összehasonlításhoz)
   allBuilds: Build[] = [];
 
   constructor(private auth: Auth, private firestore: Firestore) {}
@@ -158,7 +156,6 @@ export class ConfigCompareComponent implements OnInit {
     }
   }
 
-  // ** Új metódus az összehasonlítás gombhoz **
   onCompareClick() {
     this.selectedBuildLeft = this.filteredListLeft.find(b => b.displayName === this.selectedLeft) ?? null;
     this.selectedBuildRight = this.filteredListRight.find(b => b.displayName === this.selectedRight) ?? null;
@@ -170,17 +167,15 @@ export class ConfigCompareComponent implements OnInit {
       return true;
     }
 
-    // Ha Map típus
     if (mapOrObj instanceof Map) {
       return mapOrObj.size === 0;
     }
 
-    // Ha sima objektum
     if (typeof mapOrObj === 'object') {
       return Object.keys(mapOrObj).length === 0;
     }
 
-    return true; // egyébként üresnek vesszük
+    return true;
   }
 
 

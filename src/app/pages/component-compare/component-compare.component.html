@@ -19,7 +19,7 @@
     </div>
 
     <div *ngIf="selectedType" class="search-section">
-      <!-- BAL KERESŐ -->
+
       <div id="bal">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Keresés név alapján...</mat-label>
@@ -33,7 +33,6 @@
         <button class="torlesGomb" mat-button color="warn" (click)="resetSelection('left')" *ngIf="selectedLeft">Törlés</button>
       </div>
 
-      <!-- JOBB KERESŐ -->
       <div id="jobb">
         <button class="torlesGomb" mat-button color="warn" (click)="resetSelection('right')" *ngIf="selectedRight">Törlés</button>
         <mat-form-field appearance="fill" class="full-width">
@@ -47,7 +46,7 @@
         </mat-form-field>
 
       </div>
-      <!--Gomb ide középre igazítva-->
+
     </div>
 
     <div *ngIf="userMessage" style="text-align: center; color: red; margin-top: 10px;">
@@ -59,14 +58,11 @@
     </div>
   </div>
 
-  <!-- Összehasonlítási eredmények -->
   <div *ngIf="comparisonLeft && comparisonRight" class="comparison-result" style="margin-top: 30px; display: flex; justify-content: space-between;">
 
-    <!-- BAL OLDAL -->
     <div style="width: 45%; border: 1px solid #ccc; padding: 10px;">
       <h3>{{ comparisonLeft.name }}</h3>
 
-      <!-- CPU rész -->
       <ng-container *ngIf="leftCPU as cpu">
         <p><strong>Cores:</strong> {{ cpu.cores }}</p>
         <p><strong>Threads:</strong> {{ cpu.thread }}</p>
@@ -83,7 +79,6 @@
         </div>
       </ng-container>
 
-      <!-- GPU rész -->
       <ng-container *ngIf="leftGPU as gpu">
         <p><strong>Chip Speed:</strong> {{ gpu.chipSpeed }} GHz</p>
         <p><strong>Memory Speed:</strong> {{ gpu.chipMemoriSpeed }} GHz</p>
@@ -180,7 +175,6 @@
         <p><strong>Dimensions:</strong> {{ gpu.szelesseg }} x {{ gpu.hosszusag }} x {{ gpu.vastagsag }} mm</p>
       </ng-container>
 
-      <!-- Motherboard rész -->
       <ng-container *ngIf="leftMotherboard as mb">
         <p><strong>Socket:</strong> {{ mb.socket }}</p>
         <p><strong>Chipset:</strong> {{ mb.chipset }}</p>
@@ -206,7 +200,6 @@
         </div>
       </ng-container>
 
-      <!-- RAM rész -->
       <ng-container *ngIf="leftRAM as ram">
         <p><strong>Memória Méret:</strong> {{ ram.memorySize }} GB</p>
         <p><strong>Sebesség:</strong> {{ ram.speed }} MHz</p>
@@ -219,11 +212,9 @@
       </ng-container>
     </div>
 
-    <!-- JOBB OLDAL -->
     <div style="width: 45%; border: 1px solid #ccc; padding: 10px;">
       <h3>{{ comparisonRight.name }}</h3>
 
-      <!-- CPU rész -->
       <ng-container *ngIf="rightCPU as cpu">
         <p><strong>Cores:</strong> {{ cpu.cores }}</p>
         <p><strong>Threads:</strong> {{ cpu.thread }}</p>
@@ -240,7 +231,6 @@
         </div>
       </ng-container>
 
-      <!-- GPU rész -->
       <ng-container *ngIf="rightGPU as gpu">
         <p><strong>Chip Speed:</strong> {{ gpu.chipSpeed }} GHz</p>
         <p><strong>Memory Speed:</strong> {{ gpu.chipMemoriSpeed }} GHz</p>
@@ -337,7 +327,6 @@
         <p><strong>Dimensions:</strong> {{ gpu.szelesseg }} x {{ gpu.hosszusag }} x {{ gpu.vastagsag }} mm</p>
       </ng-container>
 
-      <!-- Motherboard rész -->
       <ng-container *ngIf="rightMotherboard as mb">
         <p><strong>Socket:</strong> {{ mb.socket }}</p>
         <p><strong>Chipset:</strong> {{ mb.chipset }}</p>
@@ -363,7 +352,6 @@
         </div>
       </ng-container>
 
-      <!-- RAM rész -->
       <ng-container *ngIf="rightRAM as ram">
         <p><strong>Memória Méret:</strong> {{ ram.memorySize }} GB</p>
         <p><strong>Sebesség:</strong> {{ ram.speed }} MHz</p>
@@ -375,8 +363,6 @@
         <p><strong>Kiszerelés:</strong> {{ ram.package }}</p>
       </ng-container>
     </div>
-
   </div>
-
 
 </div>

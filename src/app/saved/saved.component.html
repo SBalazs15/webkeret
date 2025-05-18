@@ -24,7 +24,6 @@
             <mat-list-item *ngIf="build.gpu"><strong>GPU:</strong> {{ build.gpu.name }}</mat-list-item>
             <mat-list-item><strong>PSU:</strong> {{ build.psu.name }}</mat-list-item>
           </mat-list>
-          <!-- Gomb csak ha nincs buildName és még nem szerkesztünk -->
           <button *ngIf="build.buildName === '' && editingBuildId !== build.id" mat-raised-button color="primary" (click)="startEditing(build.id)">
             Nevezd el
           </button>
@@ -32,7 +31,6 @@
             Másik név
           </button>
 
-          <!-- Ha szerkesztünk ezen a builden, akkor input + gombok -->
           <div *ngIf="editingBuildId === build.id" style="margin-top: 10px;">
             <mat-form-field appearance="fill">
               <mat-label>Build neve</mat-label>

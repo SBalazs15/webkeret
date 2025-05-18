@@ -88,8 +88,6 @@ export class SavedComponent implements OnInit {
     const buildDocRef = doc(this.firestore, 'Builds', build.id.toString());
     try {
       await updateDoc(buildDocRef, { puBlic: !build.puBlic });
-      // Ha szeretnéd, hogy az UI azonnal frissüljön, frissítsd a builds$ observable-t vagy a helyi változót
-      // Pl. ha builds$ Observable-ben vagy, újra lekérheted az adatokat
     } catch (error) {
       console.error('Hiba a publikusság frissítésekor:', error);
       alert('Hiba történt a publikusság beállításakor.');

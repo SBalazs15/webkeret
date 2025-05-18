@@ -24,7 +24,7 @@ import {Watt} from '../watt.pipe';
 })
 export class ProductDetailsComponent {
   @Input() selectedProduct: any;
-  @Output() productAddedToBuild = new EventEmitter<any>(); // ⬅️ új EventEmitter
+  @Output() productAddedToBuild = new EventEmitter<any>();
   objectKeys = Object.keys;
 
   constructor() {}
@@ -33,7 +33,7 @@ export class ProductDetailsComponent {
   addToBuild() {
     if (!this.selectedProduct || !this.selectedProduct.category) return;
 
-    this.productAddedToBuild.emit(this.selectedProduct); // ⬅️ küldi a szülőnek
+    this.productAddedToBuild.emit(this.selectedProduct);
     alert(`${this.selectedProduct.name} hozzáadva az összeállításhoz.`);
   }
 

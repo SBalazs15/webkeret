@@ -8,7 +8,6 @@
     </div>
 
     <div class="search-section">
-      <!-- BAL KERESŐ -->
       <div id="bal">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Keresés név alapján...</mat-label>
@@ -22,7 +21,6 @@
         <button class="torlesGomb" mat-button color="warn" (click)="resetSelection('left')" *ngIf="selectedLeft">Törlés</button>
       </div>
 
-      <!-- JOBB KERESŐ -->
       <div id="jobb">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Keresés név alapján...</mat-label>
@@ -44,7 +42,6 @@
 
   <div *ngIf="showComparison" class="comparison-result" style="margin-top: 30px; display: flex; justify-content: space-between; gap: 20px;">
 
-    <!-- BAL OLDAL -->
     <mat-card class="build-details" style="width: 48%; padding: 10px">
       <mat-card-title>
         <div style="font-size: xx-large; display: flex; justify-content: center; width: 100%; margin-bottom: 20px">
@@ -216,9 +213,6 @@
       </mat-card-content>
     </mat-card>
 
-
-
-    <!-- JOBB OLDAL -->
     <mat-card [ngClass]="'build-details'" [ngStyle]="{ 'width': '48%', 'padding': '10px' }">
     <mat-card-title>
         <div style="font-size: xx-large; display: flex; justify-content: center; width: 100%; margin-bottom: 20px">

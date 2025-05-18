@@ -33,7 +33,7 @@ import { Router } from '@angular/router';
 export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   editMode = false;
-  currentUser: Observable<User | null> | undefined; // Bejelentkezett felhasználó adatainak lekérése
+  currentUser: Observable<User | null> | undefined;
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
@@ -41,7 +41,7 @@ export class ProfileComponent implements OnInit {
     private fb: FormBuilder,
     private firestore: Firestore,
     private authService: AuthService,
-    private auth: Auth, // Az Auth szerviz hozzáadása
+    private auth: Auth,
     private router: Router
   ) {
     this.profileForm = this.fb.group({
@@ -145,7 +145,6 @@ export class ProfileComponent implements OnInit {
   }
 
   getErrorMessage(error: any): string {
-    // Példa hibakezelés, tovább bővíthető:
     if (error.code === 'auth/requires-recent-login') {
       return 'Biztonsági okokból kérjük, jelentkezz be újra a módosításhoz.';
     }
@@ -167,16 +166,12 @@ export class ProfileComponent implements OnInit {
     if (currentFirebaseUser) {
       const userRef = doc(this.firestore, `Users/${currentFirebaseUser.uid}`);
 
-      // 1. Először töröljük a Firestore-ból
       deleteDoc(userRef)
         .then(() => {
-          // 2. Majd töröljük az Authentication fiókot is
           return currentFirebaseUser.delete();
         })
         .then(() => {
           this.errorMessage = 'Felhasználó sikeresen törölve.';
-
-          // 3. Várjunk 2 másodpercet, majd kijelentkezés (auth service használatával)
           setTimeout(() => {
             this.authService.singOut();
           }, 2000);
@@ -190,13 +185,8 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-
-
-
   cancelEdit() {
     this.editMode = false;
-
-    // Visszaállítjuk az alapadatokat a Firestore-ból történő betöltés után
-    this.ngOnInit(); // Újra betöltjük a felhasználói adatokat
+    this.ngOnInit();
   }
 }

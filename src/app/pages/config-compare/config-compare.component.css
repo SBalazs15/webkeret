@@ -81,19 +81,16 @@ h2{
   flex-direction: column;
 }
 
-/* A szekciókat egymás mellé igazítjuk */
 .sections-container {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-/* Minden szekció egy sor */
 .section {
   display: flex;
 }
 
-/* Bal és jobb oldal szekciói egy sorban */
 .section > .left,
 .section > .right {
   width: 50%;
@@ -101,7 +98,6 @@ h2{
   padding: 0 10px;
 }
 
-/* Hogy a szekció magasságok igazodjanak egymáshoz */
 .section > .left,
 .section > .right {
   display: block;

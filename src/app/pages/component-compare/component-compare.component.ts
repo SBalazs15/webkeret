@@ -68,25 +68,21 @@ export class ComponentCompareComponent {
   async loadProducts() {
     const productsRef = collection(this.firestore, 'Products');
 
-    // CPU-k lekérése
     const cpuQuery = query(productsRef, where('category', '==', 'CPU'));
     const cpuSnap = await getDocs(cpuQuery);
     this.cpuList = cpuSnap.docs.map(doc => ({ name: doc.data()['name'] }));
     this.cpuDetails = cpuSnap.docs.map(doc => doc.data() as CPU);
 
-    // GPU-k lekérése
     const gpuQuery = query(productsRef, where('category', '==', 'GPU'));
     const gpuSnap = await getDocs(gpuQuery);
     this.gpuList = gpuSnap.docs.map(doc => ({ name: doc.data()['name'] }));
     this.gpuDetails = gpuSnap.docs.map(doc => doc.data() as GPU);
 
-    // RAM-ok lekérése
     const ramQuery = query(productsRef, where('category', '==', 'RAM'));
     const ramSnap = await getDocs(ramQuery);
     this.ramList = ramSnap.docs.map(doc => ({ name: doc.data()['name'] }));
     this.ramDetails = ramSnap.docs.map(doc => doc.data() as RAM);
 
-    // Alaplapok lekérése
     const mbQuery = query(productsRef, where('category', '==', 'MotherBoard'));
     const mbSnap = await getDocs(mbQuery);
     this.motherBoardList = mbSnap.docs.map(doc => ({ name: doc.data()['name'] }));
@@ -142,7 +138,6 @@ export class ComponentCompareComponent {
     this.searchQueryRight = this.selectedRight;
   }
 
-// Segítség a kulcsok lekéréséhez HTML-ben
   objectKeys = Object.keys;
 
 
@@ -173,7 +168,7 @@ export class ComponentCompareComponent {
     this.comparisonLeft = dataList.find(item => item.name === this.selectedLeft) || null;
     this.comparisonRight = dataList.find(item => item.name === this.selectedRight) || null;
 
-    this.userMessage = ''; // siker esetén töröljük az üzenetet
+    this.userMessage = '';
     this.isComparing = true;
   }
 
@@ -198,7 +193,6 @@ export class ComponentCompareComponent {
     if (map instanceof Map) {
       return Array.from(map.entries()).map(([key, value]) => ({ key, value }));
     } else {
-      // Ha sima objektum (pl. Firestore nem ment el Map-ként)
       return Object.entries(map).map(([key, value]) => ({ key, value }));
     }
 
@@ -207,7 +201,6 @@ export class ComponentCompareComponent {
   boolLabel(value: boolean | string | null | undefined): string {
     if (value === true || value === 'true') return 'Igen';
 
-    // Ha falsy érték, vagy üres string: "Nem"
     if (!value || value === 'false') return 'Nem';
 
     return String(value);

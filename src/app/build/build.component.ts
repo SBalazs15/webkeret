@@ -145,7 +145,6 @@ export class BuildComponent {
     try {
       const buildsCollection = collection(this.firestore, 'Builds');
 
-      // 1. Lekérjük a legnagyobb id-jú buildet az összes build közül
       const q = query(
         buildsCollection,
         orderBy('id', 'desc'),
@@ -161,7 +160,6 @@ export class BuildComponent {
 
       this.buildModel.id = newId;
 
-      // 2. Dokumentum ID legyen egyedi string, pl. 'userID-id'
       const newDocId = `${user.uid}-${newId}`;
       const newDocRef = doc(buildsCollection, newDocId);
 

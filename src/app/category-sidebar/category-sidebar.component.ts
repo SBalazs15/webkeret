@@ -33,6 +33,6 @@ export class CategorySidebarComponent {
 
 
   onSave() {
-    this.saveBuild.emit(); // ← Szólj a szülőnek, hogy menteni kell
+    this.saveBuild.emit();
   }
 }

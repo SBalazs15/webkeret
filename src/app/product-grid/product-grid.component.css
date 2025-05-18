@@ -6,7 +6,7 @@
 
 .product-list {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 oszlop */
+  grid-template-columns: repeat(7, 1fr);
   gap: 1rem;
   padding: 1rem;
 }
