@@ -14,7 +14,7 @@ import {
 
 import { Case } from '../../model/case';
 import { MotherBoard } from '../../model/motherboard';
-import { CPU } from '../../model/cpu'; // CPU típus importálása
+import { CPU } from '../../model/cpu';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -52,13 +52,12 @@ export class AdminComponent {
   availableCategories: string[] = ['Case', 'MotherBoard', 'CPU', 'Cooler', 'RAM', 'GPU', 'PSU'];
   portsArray: { name: string; count: number }[] = [];
   cacheArray: { name: string; size: number }[] = [];
-  maxIntakeArray: { name: string; value: number }[] = []; // PSU max intake hozzáadása
-  FDDArray: { active: boolean, name: string }[] = []; // FDD
-  HDDArray: { active: boolean, name: string }[] = []; // HDD
-  SATAArray: { active: boolean, name: string }[] = []; // SATA
-  PCIArray: { active: boolean, name: string }[] = []; // PCI
+  maxIntakeArray: { name: string; value: number }[] = [];
+  FDDArray: { active: boolean, name: string }[] = [];
+  HDDArray: { active: boolean, name: string }[] = [];
+  SATAArray: { active: boolean, name: string }[] = [];
+  PCIArray: { active: boolean, name: string }[] = [];
 
-  // ----- Alapértelmezett termék adatok -----
   caseData: Case = {
     id: 0,
     name: '',
@@ -211,11 +210,8 @@ export class AdminComponent {
     vastagsag: 0,
   };
 
-
-
   constructor(private firestore: Firestore) {}
 
-  // ----- Következő ID lekérdezése adott kategóriához -----
   async getNextId(category: string): Promise<number> {
     try {
       const productsCollection = collection(this.firestore, 'Products');
@@ -238,7 +234,6 @@ export class AdminComponent {
     }
   }
 
-  // ----- Univerzális mentés -----
   async saveProduct() {
     try {
       let productToSave: any;
@@ -280,7 +275,6 @@ export class AdminComponent {
         case 'GPU':
           this.gpuData.id = await this.getNextId('GPU');
 
-          // Port típusok objektumba konvertálás (Firebase nem szereti a Map-et közvetlenül)
           productToSave = {
             ...this.gpuData,
             VGA: Object.fromEntries(this.gpuData.VGA),
@@ -294,10 +288,9 @@ export class AdminComponent {
         case 'PSU':
           this.psuData.id = await this.getNextId('PSU');
 
-          // maxIntakeArray átalakítása Map-ból JSON formátumba
           productToSave = {
             ...this.psuData,
-            maxIntake: Object.fromEntries(this.psuData.maxIntake), // A maxIntake Map konvertálása JSON-ba
+            maxIntake: Object.fromEntries(this.psuData.maxIntake),
             FDD: Object.fromEntries(this.psuData.FDD),
             HDD: Object.fromEntries(this.psuData.HDD),
             SATA: Object.fromEntries(this.psuData.SATA),
@@ -321,25 +314,25 @@ export class AdminComponent {
 
   updateFDD(isChecked: boolean): void {
     if (isChecked) {
-      this.psuData.FDD.set(true, 1); // '1' a string érték, ami az aktív állapotot jelenti
+      this.psuData.FDD.set(true, 1);
     } else {
-      this.psuData.FDD.delete(true); // Ha nincs bejelölve, eltávolítjuk
+      this.psuData.FDD.delete(true);
     }
   }
 
   updateHDD(isChecked: boolean): void {
     if (isChecked) {
-      this.psuData.HDD.set(true, 1); // '1' a string érték, ami az aktív állapotot jelenti
+      this.psuData.HDD.set(true, 1);
     } else {
-      this.psuData.HDD.delete(true); // Ha nincs bejelölve, eltávolítjuk
+      this.psuData.HDD.delete(true);
     }
   }
 
   updateSATA(isChecked: boolean): void {
     if (isChecked) {
-      this.psuData.SATA.set(true, 1); // '1' a string érték, ami az aktív állapotot jelenti
+      this.psuData.SATA.set(true, 1);
     } else {
-      this.psuData.SATA.delete(true); // Ha nincs bejelölve, eltávolítjuk
+      this.psuData.SATA.delete(true);
     }
   }
 
@@ -347,41 +340,37 @@ export class AdminComponent {
     this.maxIntakeArray.push({ name: '', value: 0 });
   }
 
-  // MaxIntake mező eltávolítása
   removeMaxIntakeField(index: number): void {
     this.maxIntakeArray.splice(index, 1);
   }
 
   updatePCI_Express(isChecked: boolean): void {
     if (isChecked) {
-      this.psuData.PCI_Expresss.set(true, 1); // '1' a string érték, ami az aktív állapotot jelenti
+      this.psuData.PCI_Expresss.set(true, 1);
     } else {
-      this.psuData.PCI_Expresss.delete(true); // Ha nincs bejelölve, eltávolítjuk
+      this.psuData.PCI_Expresss.delete(true);
     }
   }
 
-// Az input mező módosításai
   onFDDInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.psuData.FDD.set(true, Number(input.value)); // A változásokat string-ként tároljuk
+    this.psuData.FDD.set(true, Number(input.value));
   }
 
   onHDDInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.psuData.HDD.set(true, Number(input.value)); // A változásokat string-ként tároljuk
+    this.psuData.HDD.set(true, Number(input.value));
   }
 
   onSATAInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.psuData.SATA.set(true, Number(input.value)); // A változásokat string-ként tároljuk
+    this.psuData.SATA.set(true, Number(input.value));
   }
 
   onPCI_ExpressInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.psuData.PCI_Expresss.set(true, Number(input.value)); // A változásokat string-ként tároljuk
+    this.psuData.PCI_Expresss.set(true, Number(input.value));
   }
-
-
 
   addCacheField() {
     this.cacheArray.push({ name: '', size: 0 });
@@ -419,41 +408,41 @@ export class AdminComponent {
 
   updateVGA(isChecked: boolean): void {
     if (isChecked) {
-      this.gpuData.VGA.set(true, 1); // Beállítjuk a VGA értékét
+      this.gpuData.VGA.set(true, 1);
     } else {
-      this.gpuData.VGA.delete(true); // Töröljük a VGA értékét
+      this.gpuData.VGA.delete(true);
     }
   }
 
   updateDVI(isChecked: boolean): void {
     if (isChecked) {
-      this.gpuData.DVI.set(true, 1); // Beállítjuk a DVI értékét
+      this.gpuData.DVI.set(true, 1);
     } else {
-      this.gpuData.DVI.delete(true); // Töröljük a DVI értékét
+      this.gpuData.DVI.delete(true);
     }
   }
 
   updateHDMI(isChecked: boolean): void {
     if (isChecked) {
-      this.gpuData.HDMI.set(true, 1); // Beállítjuk az HDMI értékét
+      this.gpuData.HDMI.set(true, 1);
     } else {
-      this.gpuData.HDMI.delete(true); // Töröljük az HDMI értékét
+      this.gpuData.HDMI.delete(true);
     }
   }
 
   updateDisplay(isChecked: boolean): void {
     if (isChecked) {
-      this.gpuData.Display.set(true, 1); // Beállítjuk a DisplayPort értékét
+      this.gpuData.Display.set(true, 1);
     } else {
-      this.gpuData.Display.delete(true); // Töröljük a DisplayPort értékét
+      this.gpuData.Display.delete(true);
     }
   }
 
   updateTypeC(isChecked: boolean): void {
     if (isChecked) {
-      this.gpuData.Type_C.set(true, 1); // Beállítjuk az USB Type-C értékét
+      this.gpuData.Type_C.set(true, 1);
     } else {
-      this.gpuData.Type_C.delete(true); // Töröljük az USB Type-C értékét
+      this.gpuData.Type_C.delete(true);
     }
   }
 
@@ -482,9 +471,6 @@ export class AdminComponent {
     this.gpuData.Type_C.set(true, input.valueAsNumber);
   }
 
-
-
-  // ----- Portok kezelése -----
   addPortField() {
     this.portsArray.push({ name: '', count: 1 });
   }
@@ -502,7 +488,7 @@ export class AdminComponent {
     }
     return map;
   }
-  // A cooler socket frissítését végző függvény
+
   updateCoolerSockets(input: string): void {
     this.cooler.socket = input
       .split(',')
@@ -510,8 +496,6 @@ export class AdminComponent {
       .filter((s) => s !== '');
   }
 
-
-  // ----- Szövegből listává alakítók -----
   updateVentSizes(input: string): void {
     this.caseData.ventSizes = input
       .split(',')
@@ -541,7 +525,6 @@ export class AdminComponent {
     this.motherboardData.ports = portMap;
   }
 
-  // ----- Űrlap alaphelyzetbe állítása -----
   resetForm() {
     this.caseData = {
       id: 0,
@@ -622,7 +605,7 @@ export class AdminComponent {
       TDP: 0
     };
 
-    this.ramData = {   // RAM reset
+    this.ramData = {
       id: 0,
       name: '',
       description: '',

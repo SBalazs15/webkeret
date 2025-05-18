@@ -12,7 +12,6 @@
 
   <form *ngIf="selectedCategory === 'Case'" (ngSubmit)="saveProduct()">
     <div class="form-grid">
-      <!-- Bal oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Név</mat-label>
@@ -45,7 +44,6 @@
         </mat-form-field>
       </div>
 
-      <!-- Jobb oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Súly (kg)</mat-label>
@@ -93,7 +91,6 @@
     </div>
   </form>
 
-  <!-- Alaplap termék hozzáadása -->
   <form *ngIf="selectedCategory === 'MotherBoard'" (ngSubmit)="saveProduct()">
     <div class="form-grid">
       <div class="form-column">
@@ -317,7 +314,6 @@
 
   <form *ngIf="selectedCategory === 'Cooler'" (ngSubmit)="saveProduct()">
     <div class="form-grid">
-      <!-- Bal oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Név</mat-label>
@@ -355,7 +351,6 @@
         </mat-form-field>
       </div>
 
-      <!-- Jobb oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Légáramlás (CFM)</mat-label>
@@ -405,7 +400,6 @@
 
   <form *ngIf="selectedCategory === 'RAM'" (ngSubmit)="saveProduct()">
     <div class="form-grid">
-      <!-- Bal oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Név</mat-label>
@@ -437,8 +431,6 @@
           <input matInput type="number" [(ngModel)]="ramData.memorySize" name="memorySize" />
         </mat-form-field>
       </div>
-
-      <!-- Jobb oldal -->
       <div class="form-column">
 
         <mat-form-field appearance="fill">
@@ -473,7 +465,6 @@
 
   <form *ngIf="selectedCategory === 'GPU'" (ngSubmit)="saveProduct()">
     <div class="form-grid">
-      <!-- Bal oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Név</mat-label>
@@ -568,8 +559,6 @@
 
 
       </div>
-
-      <!-- Jobb oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Memória méret (GB)</mat-label>
@@ -654,7 +643,6 @@
 
   <form *ngIf="selectedCategory === 'PSU'" (ngSubmit)="saveProduct()">
     <div class="form-grid">
-      <!-- Bal oldal -->
       <div class="form-column">
         <mat-form-field appearance="fill">
           <mat-label>Név</mat-label>
@@ -707,9 +695,7 @@
         </mat-form-field>
       </div>
 
-      <!-- Jobb oldal -->
       <div [ngClass]="'form-column'">
-      <!-- Dinamikusan hozzáadott mezők -->
         <div [ngClass]="'form-section'">
           <h3>Maximális  áramfelvétel</h3>
           <div *ngFor="let intake of maxIntakeArray; let i = index" class="port-row">
@@ -733,8 +719,6 @@
           </button>
         </div>
 
-
-        <!-- Csatlakozók checkbox -->
         <h3>Csatlakozók</h3>
         <table class="psu-connectors">
           <tr>
@@ -763,7 +747,6 @@
           </tr>
         </table>
 
-        <!-- Kapcsolók -->
         <h3>Kapcsolók</h3>
         <mat-checkbox [(ngModel)]="psuData.tapKapcs" name="psuTapKapcs">Tap kapcsoló</mat-checkbox>
         <mat-checkbox [(ngModel)]="psuData.v110Kapcs" name="psuV110Kapcs">110V kapcsoló</mat-checkbox>
