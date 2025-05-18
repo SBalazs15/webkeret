@@ -13,4 +13,6 @@ import { NavbarComponent } from './navbar.component';
     </div>
   `
 })
-export class AppComponent {}
+export class AppComponent {
+  title = 'projekt';
+}
